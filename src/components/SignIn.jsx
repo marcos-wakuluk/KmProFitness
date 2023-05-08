@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 
 const SignIn = () => {
@@ -20,7 +20,7 @@ const SignIn = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // TODO
+        navigation.navigate('Login');
       } else {
         // TODO
       }
@@ -31,6 +31,7 @@ const SignIn = () => {
 
   return (
     <View style={styles.container}>
+      <Image source={require('../../assets/KM-color-black.png')} style={styles.logo} />
       <Input
         placeholder="Nombre"
         value={name}
@@ -57,6 +58,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  logo: {
+    width: 275,
+    height: 150,
+    marginTop: '-35%',
+    marginBottom: '20%',
   }
 });
 
