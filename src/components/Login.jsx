@@ -1,31 +1,33 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Input, Button } from 'react-native-elements';
+import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Text, Input, Button } from 'react-native-elements';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    try {
-      const response = await fetch('https://ejemplo.com/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
+    // try {
+    //   const response = await fetch('https://ejemplo.com/api/login', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({ email, password })
+    //   });
 
-      const data = await response.json();
+    //   const data = await response.json();
 
-      if (response.ok) {
-        // TODO
-      } else {
-        // TODO
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    //   if (response.ok) {
+    //     navigation.navigate('Home');
+    //   } else {
+    //     // TODO
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // }
+    navigation.navigate('Home');
+
   };
 
   const handleRegister = () => {
@@ -38,6 +40,7 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Image source={require('../../assets/KM-color-black.png')} style={styles.logo} />
       <Input
         placeholder="Email"
         value={email}
@@ -50,8 +53,12 @@ const Login = ({ navigation }) => {
         secureTextEntry
       />
       <Button title="Iniciar sesión" onPress={handleLogin} />
-      <Button title="Registrarse" onPress={handleRegister} />
-      <Button title="Olvido su contraseña" onPress={handleforgotPassword} />
+      <TouchableOpacity onPress={handleRegister}>
+        <Text>Registrarse</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleforgotPassword}>
+        <Text>Olvido su contraseña?</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -60,8 +67,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    // justifyContent: 'center'
   },
+  logo: {
+    width: 275,
+    height: 150,
+    marginTop: '20%',
+    marginBottom: '20%',
+  }
 });
 
 export default Login;
