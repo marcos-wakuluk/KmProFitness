@@ -4,7 +4,7 @@ import Login from './src/components/Login';
 import SignIn from './src/components/SignIn';
 import PasswordRecovery from './src/components/PasswordRecovery';
 import Home from './src/components/Home';
-import TopMenu from './src/components/TopMenu';
+// import Menu from './src/components/Menu';
 import Profile from './src/components/Profile';
 // import Workout from './src/components/Workout';
 // import FoodPlan from './src/components/FoodPlan';
@@ -17,12 +17,12 @@ export default function App() {
       <Stack.Navigator
         // initialRouteName="Home"
         // screenOptions={{
-        //   headerRight: () => <TopMenu />,
+        //   headerRight: () => <Menu />,
         // }}
       >
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Signin" component={SignIn} />
-        <Stack.Screen name="ForgotPassword" component={PasswordRecovery} />
+        <Stack.Screen name="PasswordRecovery" component={PasswordRecovery} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Profile" component={Profile} />
         {/* <Stack.Screen name="Workout" component={Workout} /> */}

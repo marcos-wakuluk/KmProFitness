@@ -10,8 +10,31 @@ const Profile = () => {
   const [weight, setWeight] = useState('');
   const [profileImage, setProfileImage] = useState(null);
 
-  const handleSave = () => {
-    // Save profile data
+  const handleSave = async (imageUri, name, age, height, weight) => {
+    try {
+      // Crea un objeto FormData con los datos del usuario
+      const formData = new FormData();
+      formData.append('image', { uri: imageUri, name: 'profile.jpg', type: 'image/jpeg' });
+      formData.append('name', name);
+      formData.append('age', age);
+      formData.append('height', height);
+      formData.append('weight', weight);
+
+      // Envía los datos del usuario a la API
+      const response = await fetch('https://miapi.com/usuarios', {
+        method: 'POST',
+        body: formData,
+      });
+
+      // Comprueba si la respuesta de la API es exitosa
+      if (response.ok) {
+        console.log('Datos del usuario guardados en la API');
+      } else {
+        console.error('Error al guardar los datos del usuario en la API:', response.status);
+      }
+    } catch (error) {
+      console.error('Error al guardar los datos del usuario:', error);
+    }
   };
 
   const handleImagePick = () => {
@@ -21,35 +44,35 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={profileImage || ''}
+        source={profileImage || require('../../assets/user-default.png')}
         style={styles.profileImage}
       />
       <Button onPress={handleImagePick}>Pick Profile Image</Button>
       <TextInput
-        label="Name"
+        label="Nombre"
         value={name}
         onChangeText={setName}
       />
       <TextInput
-        label="Phone"
+        label="Telefono"
         value={phone}
         onChangeText={setPhone}
         keyboardType="phone-pad"
       />
       <TextInput
-        label="Age"
+        label="Edad"
         value={age}
         onChangeText={setAge}
         keyboardType="numeric"
       />
       <TextInput
-        label="Height"
+        label="Altura"
         value={height}
         onChangeText={setHeight}
         keyboardType="numeric"
       />
       <TextInput
-        label="Weight"
+        label="Peso"
         value={weight}
         onChangeText={setWeight}
         keyboardType="numeric"
@@ -70,6 +93,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     marginBottom: 16,
+    alignSelf: 'center',
   },
 });
 
