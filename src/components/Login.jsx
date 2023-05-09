@@ -35,7 +35,7 @@ const Login = ({ navigation }) => {
   };
 
   const handleforgotPassword = () => {
-    navigation.navigate('ForgotPassword');
+    navigation.navigate('PasswordRecovery');
   };
 
   return (
@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    // justifyContent: 'center'
   },
   logo: {
     width: 275,

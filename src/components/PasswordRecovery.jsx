@@ -1,7 +1,10 @@
-import React from 'react';
-import { View, StyleSheet, Text, Button, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, Image } from 'react-native';
+import { Input, Button } from 'react-native-elements';
 
 const PasswordRecovery = () => {
+  const [email, setEmail] = useState('');
+
   const handleRecovery = async () => {
     try {
       const response = await fetch('https://ejemplo.com/api/password-recovery', {
@@ -23,10 +26,15 @@ const PasswordRecovery = () => {
       console.error(error);
     }
   }
+
   return (
     <View style={styles.container}>
       <Image source={require('../../assets/KM-color-black.png')} style={styles.logo} />
-      <Text>Ingrese su dirección de correo electrónico para recuperar su contraseña</Text>
+      <Input
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+      />
       <Button title="Enviar email" onPress={handleRecovery} />
     </View>
   );
