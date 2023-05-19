@@ -16,16 +16,35 @@
       "**/*"
     ],
     "ios": {
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "TU_ID_DE_CLIENTE_IOS"
+        }
+      },
       "supportsTablet": true
     },
     "android": {
+      "config": {
+        "googleSignIn": {
+          "clientId": ""
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+
+      },
+      "package":"com.kmprofitness"
     },
     "web": {
+      "config": {
+        "googleSignIn": {
+          "clientId": "TU_ID_DE_CLIENTE_ANDROID"
+        }
+      },
       "favicon": "./assets/favicon.png"
-    }
+      
+    },
+     "scheme": "kmprofitness"
   }
 }

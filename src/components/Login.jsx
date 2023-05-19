@@ -1,40 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Text, Input, Button } from 'react-native-elements';
+import * as WebBrowser from 'expo-web-browser';
+import {useAuthRequest } from 'expo-auth-session/providers/google';
+import {makeRedirectUri } from 'expo-auth-session';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+WebBrowser.maybeCompleteAuthSession();
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
+  const[userInfo, setUserInfo] = useState(null)
   const [password, setPassword] = useState('');
+  
+  const [request, response, promptAsync] = useAuthRequest({
+    clientId: '',
+    scopes: ['profile', 'email'],
+    redirectUri: makeRedirectUri({
+      scheme: 'kmprofitness'
+     }),
 
-  const handleLogin = async () => {
-    // try {
-    //   const response = await fetch('https://ejemplo.com/api/login', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({ email, password })
-    //   });
+  });
+  useEffect(()=>{
+    handleSingInWithGoogle()
+  }, [response])
 
-    //   const data = await response.json();
 
-    //   if (response.ok) {
-    //     navigation.navigate('Home');
-    //   } else {
-    //     // TODO
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // }
-    navigation.navigate('Home');
-
+  const handleSingInWithGoogle = async () => {
+    const user = await AsyncStorage.getItem('@user')
+    if (!user){
+      if (response?.type==="success") {
+        await getUserInfo(response.authentication.accessToken)
+          //navigation.navigate('Home');
+      }
+    }else{
+      setUserInfo(JSON.parse(user))
+    }
   };
+  const getUserInfo = async (token) => {
+    if (!token) return
+    try{
+      const response = await fetch('https://www.google.com/userinfo/v2/me',{
+        headers :{Authorization: `Bearer ${token}`},
+      }
+    )
+    const user = await response.json()
+    await AsyncStorage.setItem('@user',JSON.stringify(user))
+    setUserInfo(user)
+    }catch(error){
+      console.log(error)
+    }
 
+  }
   const handleRegister = () => {
     navigation.navigate('Signin');
   };
 
-  const handleforgotPassword = () => {
+  const handleForgotPassword = () => {
     navigation.navigate('PasswordRecovery');
   };
 
@@ -52,13 +74,14 @@ const Login = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Iniciar sesión" onPress={handleLogin} />
+      <Button title="Iniciar sesión"  />
       <TouchableOpacity onPress={handleRegister}>
-        <Text>Registrarse</Text>
+        <Text>{JSON.stringify(userInfo)}</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleforgotPassword}>
-        <Text>Olvido su contraseña?</Text>
+      <TouchableOpacity onPress={handleForgotPassword}>
+        <Text>¿Olvidó su contraseña?</Text>
       </TouchableOpacity>
+      <Button title='Iniciar sesión con Google' onPress={() => promptAsync()}/>
     </View>
   );
 };
@@ -73,7 +96,7 @@ const styles = StyleSheet.create({
     height: 150,
     marginTop: '20%',
     marginBottom: '20%',
-  }
+  },
 });
 
 export default Login;
