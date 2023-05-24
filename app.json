@@ -16,35 +16,26 @@
       "**/*"
     ],
     "ios": {
-      "config": {
-        "googleSignIn": {
-          "reservedClientId": "TU_ID_DE_CLIENTE_IOS"
-        }
-      },
+      "config": {},
       "supportsTablet": true
     },
     "android": {
-      "config": {
-        "googleSignIn": {
-          "clientId": ""
-        }
-      },
+      "config": {},
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-
       },
-      "package":"com.kmprofitness"
+      "package": "com.kmprofitness"
     },
     "web": {
-      "config": {
-        "googleSignIn": {
-          "clientId": "TU_ID_DE_CLIENTE_ANDROID"
-        }
-      },
+      "config": {},
       "favicon": "./assets/favicon.png"
-      
     },
-     "scheme": "kmprofitness"
+    "scheme": "kmprofitness",
+    "extra": {
+      "eas": {
+        "projectId": "f673be2b-7b9d-4cd3-905d-5cf5e446a286"
+      }
+    }
   }
 }
