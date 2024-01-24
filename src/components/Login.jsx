@@ -6,7 +6,7 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = async () => {
+  const handleLogin = (userRole) => {
     // try {
     //   const response = await fetch('https://ejemplo.com/api/login', {
     //     method: 'POST',
@@ -26,8 +26,7 @@ const Login = ({ navigation }) => {
     // } catch (error) {
     //   console.error(error);
     // }
-    navigation.navigate('Home');
-
+    navigation.navigate('Home', { userRole });
   };
 
   const handleRegister = () => {
@@ -52,7 +51,8 @@ const Login = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Iniciar sesión" onPress={handleLogin} />
+      <Button title="Iniciar sesión cliente" onPress={() => handleLogin('client')} />
+      <Button title="Iniciar sesión admin" onPress={() => handleLogin('admin')} />
       <TouchableOpacity onPress={handleRegister}>
         <Text>Registrarse</Text>
       </TouchableOpacity>
