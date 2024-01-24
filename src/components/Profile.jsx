@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Image } from 'react-native';
+import { StyleSheet, View, Image, ImageBackground } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 
 const Profile = () => {
@@ -42,47 +42,57 @@ const Profile = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={profileImage || require('../../assets/user-default.png')}
-        style={styles.profileImage}
-      />
-      <Button onPress={handleImagePick}>Pick Profile Image</Button>
-      <TextInput
-        label="Nombre"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        label="Telefono"
-        value={phone}
-        onChangeText={setPhone}
-        keyboardType="phone-pad"
-      />
-      <TextInput
-        label="Edad"
-        value={age}
-        onChangeText={setAge}
-        keyboardType="numeric"
-      />
-      <TextInput
-        label="Altura"
-        value={height}
-        onChangeText={setHeight}
-        keyboardType="numeric"
-      />
-      <TextInput
-        label="Peso"
-        value={weight}
-        onChangeText={setWeight}
-        keyboardType="numeric"
-      />
-      <Button onPress={handleSave}>Save</Button>
-    </View>
+    <ImageBackground
+      source={require('../../assets/KM-color-black.png')}
+      style={styles.backgroundImage}
+    >
+      <View style={styles.container}>
+        <Image
+          source={profileImage || require('../../assets/user-default.png')}
+          style={styles.profileImage}
+        />
+        <Button onPress={handleImagePick}>Elegir imagen de perfil</Button>
+        <TextInput
+          label="Nombre"
+          value={name}
+          onChangeText={setName}
+        />
+        <TextInput
+          label="Telefono"
+          value={phone}
+          onChangeText={setPhone}
+          keyboardType="phone-pad"
+        />
+        <TextInput
+          label="Edad"
+          value={age}
+          onChangeText={setAge}
+          keyboardType="numeric"
+        />
+        <TextInput
+          label="Altura"
+          value={height}
+          onChangeText={setHeight}
+          keyboardType="numeric"
+        />
+        <TextInput
+          label="Peso"
+          value={weight}
+          onChangeText={setWeight}
+          keyboardType="numeric"
+        />
+        <Button onPress={handleSave}>Guardar</Button>
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     padding: 16,
