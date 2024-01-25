@@ -39,7 +39,7 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/KM-color-black.png')} style={styles.logo} />
+      <Image source={require('../assets/KM-color-black.png')} style={styles.logo} />
       <Input
         placeholder="Email"
         value={email}

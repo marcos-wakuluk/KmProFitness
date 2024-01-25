@@ -1,87 +1,126 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Image, ImageBackground } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Image, ImageBackground, Text } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 
 const Profile = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [age, setAge] = useState('');
-  const [height, setHeight] = useState('');
-  const [weight, setWeight] = useState('');
+  const [height, setHeight] = useState(0);
+  const [weight, setWeight] = useState(0);
   const [profileImage, setProfileImage] = useState(null);
+  const [editMode, setEditMode] = useState(false);
 
-  const handleSave = async (imageUri, name, age, height, weight) => {
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
     try {
-      // Crea un objeto FormData con los datos del usuario
-      const formData = new FormData();
-      formData.append('image', { uri: imageUri, name: 'profile.jpg', type: 'image/jpeg' });
-      formData.append('name', name);
-      formData.append('age', age);
-      formData.append('height', height);
-      formData.append('weight', weight);
+      const userId = '65b19269aec0c74211e854a4'
+      const response = await fetch(`http://localhost:3000/users/${userId}`);
+      const user = await response.json();
+      setName(user.name);
+      setPhone(user.phoneNumber);
+      setHeight(user.height);
+      setWeight(user.weight);
+      calcularEdad(user.dateOfBirth)
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
-      // Envía los datos del usuario a la API
-      const response = await fetch('https://miapi.com/usuarios', {
-        method: 'POST',
-        body: formData,
-      });
+  const handleSave = async () => {
+    try {
+      // Realizar la lógica de guardar aquí
 
-      // Comprueba si la respuesta de la API es exitosa
-      if (response.ok) {
-        console.log('Datos del usuario guardados en la API');
-      } else {
-        console.error('Error al guardar los datos del usuario en la API:', response.status);
-      }
+      // Cambiar a modo de edición después de guardar
+      setEditMode(false);
     } catch (error) {
       console.error('Error al guardar los datos del usuario:', error);
     }
+  };
+
+  const handleEdit = () => {
+    setEditMode(!editMode);
   };
 
   const handleImagePick = () => {
     // Handle profile image pick
   };
 
+  const calcularEdad = (date) => {
+    const fechaNacimientoDate = new Date(date);
+    const fechaActual = new Date();
+
+    const diferenciaMilisegundos = fechaActual - fechaNacimientoDate;
+    const edadCalculada = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60 * 24 * 365.25));
+
+    setAge(edadCalculada);
+  };
+
   return (
     <ImageBackground
-      source={require('../../assets/KM-color-black.png')}
+      source={require('../assets/KM-color-black.png')}
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
         <Image
-          source={profileImage || require('../../assets/user-default.png')}
+          source={profileImage || require('../assets/user-default.png')}
           style={styles.profileImage}
         />
-        <Button onPress={handleImagePick}>Elegir imagen de perfil</Button>
+        <Button
+          onPress={handleImagePick}
+          disabled={!editMode}
+          style={styles.button}
+        >
+          Elegir imagen de perfil
+        </Button>
         <TextInput
           label="Nombre"
           value={name}
           onChangeText={setName}
+          editable={editMode}
+          style={styles.input}
         />
         <TextInput
           label="Telefono"
           value={phone}
           onChangeText={setPhone}
           keyboardType="phone-pad"
+          editable={editMode}
+          style={styles.input}
         />
         <TextInput
           label="Edad"
-          value={age}
+          value={age.toString()}
           onChangeText={setAge}
           keyboardType="numeric"
+          editable={editMode}
+          style={styles.input}
         />
         <TextInput
           label="Altura"
-          value={height}
+          value={height.toString()}
           onChangeText={setHeight}
           keyboardType="numeric"
+          editable={editMode}
+          style={styles.input}
         />
         <TextInput
           label="Peso"
-          value={weight}
+          value={weight.toString()}
           onChangeText={setWeight}
           keyboardType="numeric"
+          editable={editMode}
+          style={styles.input}
         />
-        <Button onPress={handleSave}>Guardar</Button>
+        <Button
+          onPress={editMode ? handleSave : handleEdit}
+          style={styles.button}
+        >
+          {editMode ? 'Guardar' : 'Editar'}
+        </Button>
       </View>
     </ImageBackground>
   );
@@ -104,6 +143,14 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     marginBottom: 16,
     alignSelf: 'center',
+  },
+  input: {
+    marginBottom: 16,
+  },
+  button: {
+    marginBottom: 16,
+    backgroundColor: '#52c0ff',
+    color: '#144a94'
   },
 });
 
