@@ -78,7 +78,7 @@ const SignIn = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/KM-color-black.png')} style={styles.logo} />
+      <Image source={require('../assets/KM-color-black.png')} style={styles.logo} />
       <Input
         placeholder="Nombre"
         value={name}
@@ -122,7 +122,7 @@ const SignIn = () => {
               promptAsync()
             }}
           >
-            <Image source={require("../../assets/google-button-dark.png")} style={{ width: 300, height: 40 }} />
+            <Image source={require("../assets/google-button-dark.png")} style={{ width: 300, height: 40 }} />
           </TouchableOpacity>
         </>
       )}

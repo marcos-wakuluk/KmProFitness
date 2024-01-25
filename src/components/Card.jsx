@@ -9,8 +9,8 @@ const Card = ({ phrases, title, imageSource, description }) => {
       {imageSource && <Image source={imageSource} style={styles.image} />}
       <View style={styles.cardContent}>
         {title && <Text style={styles.title}>{title}</Text>}
-        {description && <Text>{description}</Text>}
-        {phrases && <Text>{phrases[phraseOfTheDay]}</Text>}
+        {description && <Text style={styles.title}>{description}</Text>}
+        {phrases && <Text style={styles.title}>{phrases[phraseOfTheDay]}</Text>}
       </View>
     </View>
   );
@@ -18,8 +18,10 @@ const Card = ({ phrases, title, imageSource, description }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'gray',
+    backgroundColor: '#d8f0ff',
     borderRadius: 8,
+    borderColor: '#53c0ff',
+    borderWidth: "1px",
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -37,6 +39,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#1155bc'
   },
   image: {
     width: '100%',

@@ -11,7 +11,7 @@ const UserList = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users');
+      const response = await fetch('http://localhost:3000/users');
       const data = await response.json();
       setUsers(data);
       setLoading(false);
@@ -39,7 +39,7 @@ const UserList = () => {
   return (
     <FlatList
       data={users}
-      keyExtractor={(user) => user.id.toString()}
+      keyExtractor={(user) => user._id.toString()}
       renderItem={renderUserItem}
     />
   );
