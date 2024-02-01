@@ -34,12 +34,9 @@ const Contact = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginVertical: 20,
-  },
   divider: {
     backgroundColor: 'black',
-    height: 1,
+    height: 2,
     width: '100%',
   },
   socialLinksContainer: {

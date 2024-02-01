@@ -18,17 +18,17 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Signin" component={SignIn} />
-        <Stack.Screen name="PasswordRecovery" component={PasswordRecovery} />
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="Workout" component={Workout} />
-        <Stack.Screen name="Payment" component={Payment} />
-        <Stack.Screen name="UserList" component={UserList} />
-        <Stack.Screen name="DietPlanList" component={DietPlanList} />
-        <Stack.Screen name="WorkoutList" component={WorkoutList} />
-        <Stack.Screen name="DietPlanScreen" component={DietPlanScreen} />
+        <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="Login" component={Login} />
+        <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="Signin" component={SignIn} />
+        <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="PasswordRecovery" component={PasswordRecovery} />
+        <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="Home" component={Home} />
+        <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="Profile" component={Profile} />
+        <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="Workout" component={Workout} />
+        <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="Payment" component={Payment} />
+        <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="UserList" component={UserList} />
+        <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="DietPlanList" component={DietPlanList} />
+        <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="WorkoutList" component={WorkoutList} />
+        <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="DietPlanScreen" component={DietPlanScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
