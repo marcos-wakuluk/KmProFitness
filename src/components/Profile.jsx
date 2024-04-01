@@ -101,7 +101,7 @@ const Profile = () => {
         />
         <TextInput
           label="Altura"
-          value={height.toString()}
+          value={height}
           onChangeText={setHeight}
           keyboardType="numeric"
           editable={editMode}
@@ -109,7 +109,7 @@ const Profile = () => {
         />
         <TextInput
           label="Peso"
-          value={weight.toString()}
+          value={weight}
           onChangeText={setWeight}
           keyboardType="numeric"
           editable={editMode}
