@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Image, ImageBackground } from 'react-native';
+import { StyleSheet, View, Image, Alert } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 const Profile = () => {
+  const navigation = useNavigation();
+
   const [biceps, setBiceps] = useState(0);
   const [waist, setWaist] = useState(0);
   const [thigh, setThigh] = useState(0);
@@ -11,11 +14,29 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      // Realizar la lógica de guardar aquí
+      const userData = {
+        biceps: parseInt(biceps),
+        waist: parseInt(waist),
+        thigh: parseInt(thigh),
+        chest: parseInt(chest),
+        weight: parseInt(weight),
+      };
 
-      // Cambiar a modo de edición después de guardar
+      await fetch('http://localhost:3000/saveInitialData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      [setBiceps, setWaist, setThigh, setChest, setWeight].forEach(setState => setState(0));
+      Alert.alert('Datos guardados exitosamente', '', [
+        { text: 'OK', onPress: () => navigation.navigate('Home') }
+      ]);
     } catch (error) {
       console.error('Error al guardar los datos del usuario:', error);
+      alert('Ocurrió un error al guardar los datos. Por favor, inténtalo de nuevo.');
     }
   };
 
