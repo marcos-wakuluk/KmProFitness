@@ -13,7 +13,8 @@ const UserList = () => {
     try {
       const response = await fetch('http://localhost:3000/users');
       const data = await response.json();
-      setUsers(data);
+      const users = data.data.users
+      setUsers(users);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching users:', error);
