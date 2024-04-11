@@ -1,17 +1,33 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, Linking } from 'react-native';
+
+const linkMP = 'https://www.mercadolibre.com.ar/'
+
 
 const Payment = () => {
+  const handlePress = () => {
+    Linking.openURL(linkMP);
+  };
+
   return (
     <View style={style.container}>
-      <Text>Aca va todo el sistema de pago</Text>
-      <Text>Link a MP</Text>
+      <TouchableOpacity onPress={handlePress}>
+        <Text style={styles.link}>Mercado pago</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
-style = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' }
+const style = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  link: {
+    color: 'blue',
+    textDecorationLine: 'underline',
+  },
 })
 
 export default Payment;

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Image, Alert } from 'react-native';
+import { StyleSheet, View, Image, Alert, Text } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
-const Profile = () => {
+const MonthlyCheckup = () => {
   const navigation = useNavigation();
 
   const [biceps, setBiceps] = useState(0);
@@ -22,7 +22,7 @@ const Profile = () => {
         weight: parseInt(weight),
       };
 
-      await fetch('http://localhost:3000/saveInitialData', {
+      await fetch('http://localhost:3000/saveProgress', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,9 +43,17 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <View style={styles.background}></View>
+      <Text style={styles.title}>Chequeo mensual</Text>
       <Image
         source={require('../assets/KM-white.png')}
         style={styles.image}
+      />
+      <TextInput
+        label="Circunferencia de pecho (cm)"
+        value={chest.toString()}
+        onChangeText={setChest}
+        keyboardType="numeric"
+        style={styles.input}
       />
       <TextInput
         label="Circunferencia de biceps (cm)"
@@ -65,13 +73,6 @@ const Profile = () => {
         label="Circunferencia de muslo (cm)"
         value={thigh.toString()}
         onChangeText={setThigh}
-        keyboardType="numeric"
-        style={styles.input}
-      />
-      <TextInput
-        label="Circunferencia de pecho (cm)"
-        value={chest.toString()}
-        onChangeText={setChest}
         keyboardType="numeric"
         style={styles.input}
       />
@@ -97,6 +98,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     justifyContent: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   background: {
     position: 'absolute',
@@ -126,4 +131,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Profile;
+export default MonthlyCheckup;
