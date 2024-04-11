@@ -23,7 +23,7 @@ const AdminView = ({ navigation }) => {
   );
 };
 
-styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
