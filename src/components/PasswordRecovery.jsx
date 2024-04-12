@@ -19,7 +19,7 @@ const PasswordRecovery = ({ navigation }) => {
       if (response.ok) {
         navigation.navigate('Login');
       } else {
-        alert('ocurrio un error')
+        alert('Ocurrio un error al enviar el email de recuperacion de contraseña')
       }
     } catch (error) {
       console.error(error);
