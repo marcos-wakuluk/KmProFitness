@@ -60,25 +60,6 @@ const Login = ({ navigation }) => {
 
 
   const handleLogin = (userRole) => {
-    // try {
-    //   const response = await fetch('https://ejemplo.com/api/login', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({ email, password })
-    //   });
-
-    //   const data = await response.json();
-
-    //   if (response.ok) {
-    //     navigation.navigate('Home');
-    //   } else {
-    //     // TODO
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // }
     navigation.navigate('Home', { userRole });
   };
 
