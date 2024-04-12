@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 
-const PasswordRecovery = () => {
+const PasswordRecovery = ({ navigation }) => {
   const [email, setEmail] = useState('');
 
   const handleRecovery = async () => {
     try {
-      const response = await fetch('https://ejemplo.com/api/password-recovery', {
+      const response = await fetch('http://localhost:3000/password-recovery', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -15,12 +15,11 @@ const PasswordRecovery = () => {
         body: JSON.stringify({ email })
       });
 
-      const data = await response.json();
-
+      console.log("🚀 ~ handleRecovery ~ response:", response)
       if (response.ok) {
         navigation.navigate('Login');
       } else {
-        // TODO
+        alert('ocurrio un error')
       }
     } catch (error) {
       console.error(error);
