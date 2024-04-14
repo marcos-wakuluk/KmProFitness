@@ -9,10 +9,10 @@ import MonthlyCheckup from './monthlyCheckup';
 
 const Home = ({ navigation }) => {
   const route = useRoute();
-  const { userRole } = route.params || {};
-  const [userData, setUserData] = useState(null);
-  const id = '66070ee0e2566b81fb3c9e7b'
-  const completedData = false // sacar de user.completedData;
+  const { user } = route.params || {};
+  const isAdmin = user.email === "wakuluk.marcos@gmail.com";
+  console.log("🚀 ~ Home ~ user:", user)
+  const completedData = false
 
   const [monthlyCheckup, setMonthlyCheckup] = useState(false);
 
@@ -28,23 +28,10 @@ const Home = ({ navigation }) => {
   //   setMonthlyCheckup(false);
   // }
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch(`https://localhost:3000/users/${id}`);
-        const userData = await response.json();
-        setUserData(userData);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
   return (
     <View style={styles.container}>
-      {userRole === 'admin' && <AdminView navigation={navigation} />}
-      {userRole === 'client' && completedData ? <CompletedData /> : monthlyCheckup ? <MonthlyCheckup /> : <ClientView navigation={navigation} />}
+      {isAdmin && <AdminView navigation={navigation} />}
+      {/* {userRole === 'client' && completedData ? <CompletedData /> : monthlyCheckup ? <MonthlyCheckup /> : <ClientView navigation={navigation} />} */}
     </View>
   );
 };

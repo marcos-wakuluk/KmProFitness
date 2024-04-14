@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useState } from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { View, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native';
@@ -12,69 +12,7 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isFormCompleted, setIsFormCompleted] = useState(false);
-  const [accessToken, setAccessToken] = useState(null);
   const [user, setUser] = useState(null);
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: "405200534919-ata6h1i6es75mepqqu4i4uokgl782flm.apps.googleusercontent.com",
-    iosClientId: "405200534919-9t0ffa84n7nu0nhtfk166keougdosleg.apps.googleusercontent.com",
-    androidClientId: "405200534919-g3c1uta6mh11gm3sgb9l790cippuqn5c.apps.googleusercontent.com"
-  });
-
-  useEffect(() => {
-    if (response?.type === 'success') {
-      setAccessToken(response.authentication.accessToken)
-      accessToken && fetchUserInfo()
-    }
-  }, [response, accessToken])
-
-  async function fetchUserInfo() {
-    let response = await fetch("https://www.googleapis.com/oauth2/v1/certs", {
-      headers: {
-        Authorizarion: `Bearer ${accessToken}`
-      }
-    })
-
-    const userInfo = await response.json()
-    setUser(userInfo)
-  }
-
-  const ShowUserInfo = () => {
-    if (user) {
-      return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ fontSize: 35, fontWeigth: 'bold', marginBottom: 20 }}>Welcome</Text>
-          <Image source={{ uri: user.picture }} style={{ width: 100, height: 100, borderRadius: 50 }}></Image>
-          <Text style={{ fontSize: 20, fontWeigth: 'bold' }}>{user.name}</Text>
-        </View>
-      )
-    }
-  }
-
-  useEffect(() => {
-    setIsFormCompleted(name !== '' && email !== '' && password !== '' && isChecked);
-  }, [name, email, password, isChecked]);
-
-  const handleSignUp = async () => {
-    try {
-      const response = await fetch('https://ejemplo.com/api/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ name, email, password })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        navigation.navigate('Login');
-      } else {
-        // TODO
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   return (
     <View style={styles.container}>
