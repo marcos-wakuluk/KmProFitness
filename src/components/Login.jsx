@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { View, StyleSheet, TouchableOpacity, Button, Image, Text } from 'react-native';
 import { Input } from 'react-native-elements';
 import * as WebBrowser from 'expo-web-browser';
@@ -14,7 +15,8 @@ const Login = ({ navigation }) => {
   const [userInfo, setUserInfo] = useState(null);
   const [request, response, promptAsync] = Google.useAuthRequest({
     iosClientId: "405200534919-9t0ffa84n7nu0nhtfk166keougdosleg.apps.googleusercontent.com",
-    webClientId: "405200534919-ata6h1i6es75mepqqu4i4uokgl782flm.apps.googleusercontent.com"
+    webClientId: "405200534919-ata6h1i6es75mepqqu4i4uokgl782flm.apps.googleusercontent.com",
+    androidClientId: "405200534919-g3c1uta6mh11gm3sgb9l790cippuqn5c.apps.googleusercontent.com"
   });
 
   useEffect(() => {
@@ -25,7 +27,6 @@ const Login = ({ navigation }) => {
     const user = await getLocalUser()
     if (!user) {
       if (response?.type === "success") {
-        console.log("🚀 ~ handleSignInWithGoogle ~ response.authentication.accessToken:", response.authentication.accessToken)
         getUserInfo(response.authentication.accessToken)
       }
     } else {
@@ -41,27 +42,42 @@ const Login = ({ navigation }) => {
   }
 
   const getUserInfo = async (token) => {
-    if (!token) return
+    if (!token) return;
     try {
-      const response = await fetch(
+      const response = await axios.get(
         "https://www.googleapis.com/userinfo/v2/me",
         {
-          headers: { Autorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` }
         }
-      )
-      const user = await response.json()
-      await AsyncStorage.setItem("@user", JSON.stringify(user))
-      setUserInfo(user)
+      );
+      const user = response.data;
+      await AsyncStorage.setItem("@user", JSON.stringify(user));
+      setUserInfo(user);
+      return user; // Devolver el usuario obtenido
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-
-
-
-  const handleLogin = (userRole) => {
-    navigation.navigate('Home', { userRole });
   };
+
+  useEffect(() => {
+    signInWithGoogle();
+  }, [response]);
+
+  const signInWithGoogle = async () => {
+    try {
+      const userJSON = await AsyncStorage.getItem("@user");
+
+      if (userJSON) {
+        setUserInfo(JSON.parse(userJSON));
+      } else if (response?.type === "success") {
+        const userInfo = await getUserInfo(response.authentication.accessToken);
+        navigation.navigate('Home', { user: userInfo });
+      }
+    } catch (error) {
+      console.error("Error retrieving user data from AsyncStorage:", error);
+    }
+  };
+
 
   const handleRegister = () => {
     navigation.navigate('Signin');
@@ -90,9 +106,7 @@ const Login = ({ navigation }) => {
           <Button
             title="sign in whit google"
             disabled={!request}
-            onPress={() => {
-              promptAsync()
-            }}
+            onPress={() => promptAsync()}
           />
         </View>
       ) : (
@@ -108,8 +122,6 @@ const Login = ({ navigation }) => {
             onPress={async () => await AsyncStorage.removeItem("@user")} />
         </View>
       )}
-      <Button title="Iniciar sesión cliente" onPress={() => handleLogin('client')} />
-      <Button title="Iniciar sesión admin" onPress={() => handleLogin('admin')} />
       <TouchableOpacity onPress={handleRegister}>
         <Text>Registrarse</Text>
       </TouchableOpacity>

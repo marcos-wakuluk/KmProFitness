@@ -9,6 +9,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
+.env
 
 # macOS
 .DS_Store
@@ -17,9 +18,6 @@ web-build/
 .metro-health-check*
 
 package-lock.json
-client_405200534919-9t0ffa84n7nu0nhtfk166keougdosleg.apps.googleusercontent.com.plist
-client_secret_405200534919-g3c1uta6mh11gm3sgb9l790cippuqn5c.apps.googleusercontent.com.json
-client_secret_405200534919-ata6h1i6es75mepqqu4i4uokgl782flm.apps.googleusercontent.com.json
 yarn.lock
 android/
 ios/

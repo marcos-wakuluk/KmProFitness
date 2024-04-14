@@ -1,22 +1,22 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { IoPerson, IoRestaurant, IoFitness, IoWallet } from 'react-icons/io5';
 
 const AdminView = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.menuContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('UserList')}>
-          <Icon name="person" size={30} color="black" />
+          <IoPerson size={30} color="black" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('DietPlanList')}>
-          <Icon name="restaurant" size={30} color="black" />
+          <IoRestaurant size={30} color="black" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('WorkoutList')}>
-          <Icon name="fitness" size={30} color="black" />
+          <IoFitness size={30} color="black" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Payment')}>
-          <Icon name="wallet" size={30} color="black" />
+          <IoWallet size={30} color="black" />
         </TouchableOpacity>
       </View>
     </View>
