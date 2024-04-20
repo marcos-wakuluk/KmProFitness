@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Text, Image } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const AdminView = ({ navigation }) => {
@@ -25,7 +25,6 @@ const AdminView = ({ navigation }) => {
             <Icon name="wallet" size={30} color="black" />
           </TouchableOpacity>
         </View>
-        <Text style={styles.welcomeText}>Hola Lucas</Text>
       </View>
     </>
   );
