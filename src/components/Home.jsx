@@ -31,7 +31,7 @@ const Home = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {isAdmin && <AdminView navigation={navigation} />}
-      {/* {userRole === 'client' && completedData ? <CompletedData /> : monthlyCheckup ? <MonthlyCheckup /> : <ClientView navigation={navigation} />} */}
+      {!isAdmin && completedData ? <CompletedData /> : monthlyCheckup ? <MonthlyCheckup /> : <ClientView navigation={navigation} />}
     </View>
   );
 };

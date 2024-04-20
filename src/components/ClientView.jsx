@@ -12,6 +12,7 @@ const ClientView = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.divider} />
       <View style={styles.background}></View>
 
       <Image
@@ -59,6 +60,11 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: -1,
+  },
+  divider: {
+    backgroundColor: 'black',
+    height: 2,
+    width: '100%',
   },
   contentContainer: {
     flex: 1,
