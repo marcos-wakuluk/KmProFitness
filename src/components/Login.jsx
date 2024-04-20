@@ -8,11 +8,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 WebBrowser.maybeCompleteAuthSession();
 
+const defaultUser = {
+  email: "marcos.admin@gmail.com",
+  family_name: "admin",
+  given_name: "Marcos",
+  id: "102766186783018542527",
+  locale: "en",
+  name: "Marcos Admin",
+  picture: "https://lh3.googleusercontent.com/a/ACg8ocLg_92IAMlHWAjDVpVScBuHtywJvtcNTZ55I_4_c0h2xNDXCnC-=s96-c",
+  verified_email: true
+}
+
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const [userInfo, setUserInfo] = useState(null);
+
   const [request, response, promptAsync] = Google.useAuthRequest({
     iosClientId: process.env.CLIENT_ID_IOS,
     webClientId: process.env.CLIENT_ID_WEB,
@@ -53,7 +64,7 @@ const Login = ({ navigation }) => {
       const user = response.data;
       await AsyncStorage.setItem("@user", JSON.stringify(user));
       setUserInfo(user);
-      return user; // Devolver el usuario obtenido
+      return user;
     } catch (error) {
       console.log(error);
     }
@@ -78,9 +89,12 @@ const Login = ({ navigation }) => {
     }
   };
 
-
   const handleRegister = () => {
     navigation.navigate('Signin');
+  };
+
+  const handleLogin = () => {
+    navigation.navigate('Home', { user: defaultUser });
   };
 
   const handleforgotPassword = () => {
@@ -114,9 +128,6 @@ const Login = ({ navigation }) => {
           {userInfo?.picture && (
             <Image source={{ uri: userInfo.picture }} />
           )}
-          <Text>Email: {userInfo.email}</Text>
-          <Text>Verified: {userInfo.verified_email ? "yes" : "no"}</Text>
-          <Text>Name:{userInfo.name}</Text>
           <Button
             title='Remove Local Storage'
             onPress={async () => await AsyncStorage.removeItem("@user")} />
@@ -127,6 +138,9 @@ const Login = ({ navigation }) => {
       </TouchableOpacity>
       <TouchableOpacity onPress={handleforgotPassword}>
         <Text>Olvido su contraseña?</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleLogin}>
+        <Text>LOGIN</Text>
       </TouchableOpacity>
     </View>
   );

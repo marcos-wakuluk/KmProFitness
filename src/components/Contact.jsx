@@ -4,17 +4,17 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Contact = () => {
   const handleWhatsAppPress = () => {
-    Linking.openURL('whatsapp://send?text=Hola Lucas&phone=+5493584373128');
+    Linking.openURL(`whatsapp://send?text=Hola Lucas&phone=${process.env.WHATSAPP}`);
   };
 
   const handleInstagramPress = () => {
-    Linking.openURL('https://www.instagram.com/kmprofitness/');
+    Linking.openURL(`${process.env.INSTAGRAM}`);
   };
   return (
-    <View style={styles.container}>
+    <>
       <View style={styles.divider} />
-
       <View style={styles.socialLinksContainer}>
+
         <TouchableOpacity onPress={handleWhatsAppPress}>
           <View style={styles.iconContainer}>
             <Icon name="whatsapp" size={30} color="green" />
@@ -24,12 +24,13 @@ const Contact = () => {
 
         <TouchableOpacity onPress={handleInstagramPress}>
           <View style={styles.iconContainer}>
-            <Icon name="instagram" size={30} color="blue" />
+            <Icon name="instagram" size={30} color="red" />
             <Text style={styles.iconText}>Km Pro Fitness</Text>
           </View>
         </TouchableOpacity>
+
       </View>
-    </View>
+    </>
   );
 };
 
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
   socialLinksContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 20,
+    marginTop: 10,
     alignItems: 'center',
   },
   iconContainer: {

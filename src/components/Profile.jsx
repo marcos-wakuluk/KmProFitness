@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Image, ImageBackground, Text } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 
 const Profile = () => {
@@ -20,6 +20,7 @@ const Profile = () => {
       const userId = '65b19269aec0c74211e854a4'
       const response = await fetch(`http://localhost:3000/users/${userId}`);
       const user = await response.json();
+      setProfileImage(user.image)
       setName(user.name);
       setPhone(user.phoneNumber);
       setHeight(user.height);
@@ -60,10 +61,12 @@ const Profile = () => {
   };
 
   return (
-    <ImageBackground
-      source={require('../assets/KM-color-black.png')}
-      style={styles.backgroundImage}
-    >
+    <>
+      <View style={styles.background}></View>
+      <Image
+        source={require('../assets/KM-white.png')}
+        style={styles.image}
+      />
       <View style={styles.container}>
         <Image
           source={profileImage || require('../assets/user-default.png')}
@@ -122,15 +125,28 @@ const Profile = () => {
           {editMode ? 'Guardar' : 'Editar'}
         </Button>
       </View>
-    </ImageBackground>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
+  background: {
+    position: 'absolute',
+    backgroundColor: '#069af1',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: -1,
+  },
+  image: {
+    position: 'absolute',
+    resizeMode: 'contain',
+    zIndex: 0,
+    height: 200,
+    width: 200,
+    alignSelf: 'center',
+    top: '40%',
   },
   container: {
     flex: 1,
