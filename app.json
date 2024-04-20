@@ -4,7 +4,6 @@
     "slug": "KmProFitness",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./scr/assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./src/assets/splash.png",
@@ -30,6 +29,11 @@
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
-    "scheme": "kmprofitness"
+    "scheme": "kmprofitness",
+    "extra": {
+      "eas": {
+        "projectId": "9bc04a7c-95ee-4e3c-b0b5-25652566bc8e"
+      }
+    }
   }
 }
