@@ -12,6 +12,7 @@ import Payment from './src/components/Payment';
 import UserList from './src/components/UserList';
 import DietPlanList from './src/components/DietPlanList';
 import WorkoutList from './src/components/WorkoutList';
+import UserDetail from './src/components/UserDetail';
 
 const Stack = createStackNavigator();
 
@@ -28,6 +29,7 @@ export default function App() {
           <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="Workout" component={Workout} />
           <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="Payment" component={Payment} />
           <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="UserList" component={UserList} />
+          <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="UserDetail" component={UserDetail} />
           <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="DietPlanList" component={DietPlanList} />
           <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="WorkoutList" component={WorkoutList} />
           <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="DietPlanScreen" component={DietPlanScreen} />
