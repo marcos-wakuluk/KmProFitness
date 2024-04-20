@@ -11,7 +11,6 @@ const Home = ({ navigation }) => {
   const route = useRoute();
   const { user } = route.params || {};
   const isAdmin = user.email === "wakuluk.marcos@gmail.com";
-  console.log("🚀 ~ Home ~ user:", user)
   const completedData = false
 
   const [monthlyCheckup, setMonthlyCheckup] = useState(false);
@@ -30,8 +29,8 @@ const Home = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {isAdmin && <AdminView navigation={navigation} />}
-      {!isAdmin && completedData ? <CompletedData /> : monthlyCheckup ? <MonthlyCheckup /> : <ClientView navigation={navigation} />}
+      {true && <AdminView navigation={navigation} />}
+      {/* {!isAdmin && completedData ? <CompletedData /> : monthlyCheckup ? <MonthlyCheckup /> : <ClientView navigation={navigation} />} */}
     </View>
   );
 };

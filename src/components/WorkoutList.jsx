@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet, Alert, Platform } from 'react-native';
+import * as DocumentPicker from 'expo-document-picker';
 
 const WorkoutList = () => {
   const [pdfFiles, setPdfFiles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedPdf, setSelectedPdf] = useState(null);
 
   useEffect(() => {
     fetchPdfFiles();
@@ -41,10 +43,49 @@ const WorkoutList = () => {
     console.log(`Asignar PDF ${pdfId} a un cliente`);
   };
 
-  const handleAddNewPdf = () => {
-    // Aquí puedes implementar la lógica para agregar un nuevo PDF
-    // Puedes abrir un formulario para ingresar detalles del nuevo PDF
-    console.log('Agregar nuevo PDF');
+  const uploadPdf = async () => {
+    try {
+      let result = null;
+      if (Platform.OS === 'ios') {
+        result = await DocumentPicker.getDocumentAsync({ type: 'application/pdf' });
+      } else if (Platform.OS === 'android') {
+        result = await DocumentPicker.getDocumentAsync({ type: 'application/pdf', copyToCacheDirectory: false });
+      }
+
+      if (result.type === 'success') {
+        setSelectedPdf(result);
+
+        const fileUri = result.uri;
+        const fileName = fileUri.split('/').pop();
+        const formData = new FormData();
+        formData.append('pdf', {
+          uri: fileUri,
+          name: fileName,
+          type: 'application/pdf',
+        });
+
+        const response = await fetch('http://localhost:3000//uploadPdf', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        if (response.ok) {
+          Alert.alert('Éxito', 'El PDF se ha subido correctamente');
+        } else {
+          Alert.alert('Error', 'Ha ocurrido un error al subir el archivo PDF');
+        }
+
+        Alert.alert('Éxito', 'El PDF se ha subido correctamente');
+      } else {
+        Alert.alert('Error', 'No se ha seleccionado ningún archivo PDF');
+      }
+    } catch (error) {
+      console.log('Error al seleccionar el archivo PDF:', error);
+      Alert.alert('Error', 'Ha ocurrido un error al seleccionar el archivo PDF');
+    }
   };
 
   if (loading) {
@@ -62,7 +103,7 @@ const WorkoutList = () => {
         keyExtractor={(pdf) => pdf.id.toString()}
         renderItem={renderPdfItem}
       />
-      <Button title="Agregar Nuevo PDF" onPress={handleAddNewPdf} />
+      <Button title="Subir PDF" onPress={uploadPdf} />
     </View>
   );
 };
