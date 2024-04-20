@@ -14,9 +14,9 @@ const Login = ({ navigation }) => {
 
   const [userInfo, setUserInfo] = useState(null);
   const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId: "405200534919-9t0ffa84n7nu0nhtfk166keougdosleg.apps.googleusercontent.com",
-    webClientId: "405200534919-ata6h1i6es75mepqqu4i4uokgl782flm.apps.googleusercontent.com",
-    androidClientId: "405200534919-g3c1uta6mh11gm3sgb9l790cippuqn5c.apps.googleusercontent.com"
+    iosClientId: process.env.CLIENT_ID_IOS,
+    webClientId: process.env.CLIENT_ID_WEB,
+    androidClientId: process.env.CLIENT_ID_ANDROID
   });
 
   useEffect(() => {
