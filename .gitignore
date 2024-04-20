@@ -1,3 +1,5 @@
+.env
+package-lock.json
 npm-debug.*
 *.jks
 *.p8
@@ -58,4 +60,4 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli
-.env
+
