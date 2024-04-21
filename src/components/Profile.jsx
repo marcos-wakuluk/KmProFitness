@@ -33,9 +33,9 @@ const Profile = () => {
 
   const handleSave = async () => {
     try {
-      // Realizar la lógica de guardar aquí
+      // TODO: Realizar la lógica de guardar aquí
 
-      // Cambiar a modo de edición después de guardar
+      // TODO: Cambiar a modo de edición después de guardar
       setEditMode(false);
     } catch (error) {
       console.error('Error al guardar los datos del usuario:', error);
@@ -47,7 +47,7 @@ const Profile = () => {
   };
 
   const handleImagePick = () => {
-    // Handle profile image pick
+    // TODO: Handle profile image pick
   };
 
   const calcularEdad = (date) => {

@@ -4,8 +4,7 @@ import { View, TextInput, StyleSheet, Text, FlatList, Button } from 'react-nativ
 import { CheckBox } from 'react-native-elements';
 
 const AssignDietView = ({ navigation, route }) => {
-  // const { dietId } = route.params;
-  const dietId = '662479fce912697ed5f1de3e';
+  const { dietId } = route.params;
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');

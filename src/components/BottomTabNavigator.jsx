@@ -1,11 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons'; // Importa el ícono que desees usar
-
-// import ProfileScreen from './ProfileScreen'; // Importa tus pantallas
+import Icon from 'react-native-vector-icons/Ionicons';
 import DietPlanScreen from './DietPlanScreen';
-import WorkoutGuideScreen from './WorkoutGuideScreen';
-import PaymentScreen from './PaymentScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,7 +13,7 @@ const BottomTabNavigator = () => {
           let iconName;
 
           if (route.name === 'Perfil') {
-            iconName = focused ? 'person' : 'person-outline'; // Reemplaza con los nombres de los íconos que desees
+            iconName = focused ? 'person' : 'person-outline';
           } else if (route.name === 'Plan de Alimentación') {
             iconName = focused ? 'restaurant' : 'restaurant-outline';
           } else if (route.name === 'Guía de Entrenamiento') {
@@ -30,14 +26,11 @@ const BottomTabNavigator = () => {
         },
       })}
       tabBarOptions={{
-        activeTintColor: 'blue', // Color de ícono activo
-        inactiveTintColor: 'gray', // Color de ícono inactivo
+        activeTintColor: 'blue',
+        inactiveTintColor: 'gray',
       }}
     >
-      {/* <Tab.Screen name="Perfil" component={ProfileScreen} /> */}
       <Tab.Screen name="Plan de Alimentación" component={DietPlanScreen} />
-      {/* <Tab.Screen name="Guía de Entrenamiento" component={WorkoutGuideScreen} />
-      <Tab.Screen name="Pago" component={PaymentScreen} /> */}
     </Tab.Navigator>
   );
 };
