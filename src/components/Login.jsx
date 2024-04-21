@@ -9,14 +9,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 WebBrowser.maybeCompleteAuthSession();
 
 const defaultUser = {
-  email: "wakuluk.marcos@gmail.com",
+  email: "jonsnow@email.com",
   family_name: "user",
   given_name: "new",
   id: "102766186783018542527",
   locale: "en",
   name: "new user",
   picture: "https://lh3.googleusercontent.com/a/ACg8ocLg_92IAMlHWAjDVpVScBuHtywJvtcNTZ55I_4_c0h2xNDXCnC-=s96-c",
-  verified_email: true
+  verified_email: true,
+  phone: "3584315362"
 }
 
 const Login = ({ navigation }) => {
@@ -96,7 +97,7 @@ const Login = ({ navigation }) => {
 
   const handleLogin = async () => {
     let user = await axios.post('http://localhost:3000/users', defaultUser)
-    navigation.navigate('Home', { user: user });
+    navigation.navigate('Home', { user: user.data.data.user });
   };
 
   const handleforgotPassword = () => {

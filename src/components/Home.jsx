@@ -10,7 +10,7 @@ import MonthlyCheckup from './monthlyCheckup';
 const Home = ({ navigation }) => {
   const route = useRoute();
   const { user } = route.params || {};
-  const isAdmin = user.email === "wakuluk.marcos@gmail.com";
+  const isAdmin = user.email === "wakuluk@gmail.com";
   const completedData = false
 
   const [monthlyCheckup, setMonthlyCheckup] = useState(false);
@@ -29,8 +29,8 @@ const Home = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {true && <AdminView navigation={navigation} />}
-      {/* {!isAdmin && completedData ? <CompletedData /> : monthlyCheckup ? <MonthlyCheckup /> : <ClientView navigation={navigation} />} */}
+      {isAdmin && <AdminView navigation={navigation} />}
+      {!isAdmin && completedData ? <CompletedData /> : monthlyCheckup ? <MonthlyCheckup /> : <ClientView navigation={navigation} user={user} />}
     </View>
   );
 };
