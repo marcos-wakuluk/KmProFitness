@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { View, TextInput, StyleSheet, Text, FlatList, Button } from 'react-native';
+import { View, TextInput, StyleSheet, Text, FlatList, Button, Image } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
 const AssignDietView = ({ navigation, route }) => {
@@ -97,6 +97,11 @@ const AssignDietView = ({ navigation, route }) => {
 
   return (
     <>
+      <View style={styles.background}></View>
+      <Image
+        source={require('../assets/KM-white.png')}
+        style={styles.image}
+      />
       <TextInput
         style={styles.searchInput}
         placeholder="Buscar usuario"
@@ -109,12 +114,29 @@ const AssignDietView = ({ navigation, route }) => {
         renderItem={renderUserItem}
       />
       <Button title="Guardar" onPress={handleSaveChanges} />
-
     </>
   )
 };
 
 const styles = StyleSheet.create({
+  background: {
+    position: 'absolute',
+    backgroundColor: '#069af1',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: -1,
+  },
+  image: {
+    position: 'absolute',
+    resizeMode: 'contain',
+    zIndex: 0,
+    height: 200,
+    width: 200,
+    alignSelf: 'center',
+    top: '40%',
+  },
   userItem: {
     flexDirection: 'row',
     alignItems: 'center',
