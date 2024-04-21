@@ -15,7 +15,6 @@ const PasswordRecovery = ({ navigation }) => {
         body: JSON.stringify({ email })
       });
 
-      console.log("🚀 ~ handleRecovery ~ response:", response)
       if (response.ok) {
         navigation.navigate('Login');
       } else {
