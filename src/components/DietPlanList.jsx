@@ -6,12 +6,11 @@ import axios from 'axios';
 const DietPlanList = ({ navigation }) => {
   const [pdfFiles, setPdfFiles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPdf, setSelectedPdf] = useState(null);
   const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
     fetchPdfFiles();
-  }, []);
+  }, [pdfFiles]);
 
   const fetchPdfFiles = async () => {
     try {
@@ -45,7 +44,7 @@ const DietPlanList = ({ navigation }) => {
 
       if (result) {
         const fileUri = result.assets[0].uri;
-        const fileName = fileUri.split('/').pop();
+        const fileName = result.assets[0].name;
         const formData = new FormData();
         formData.append('pdf', {
           uri: fileUri,

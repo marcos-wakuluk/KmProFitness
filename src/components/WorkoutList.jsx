@@ -1,28 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet, Alert, Platform } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet, Alert, Platform, TextInput, Image } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
+import axios from 'axios';
 
 const WorkoutList = () => {
   const [pdfFiles, setPdfFiles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPdf, setSelectedPdf] = useState(null);
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
     fetchPdfFiles();
-  }, []);
+  }, [pdfFiles]);
 
   const fetchPdfFiles = async () => {
     try {
-      // Aquí deberías realizar la lógica para obtener la lista de archivos PDF
-      // Puedes hacer una solicitud a tu servidor o cargar archivos localmente
-      // En este ejemplo, simplemente cargamos una lista ficticia
-      const fakePdfFiles = [
-        { id: 1, name: 'File1.pdf' },
-        { id: 2, name: 'File2.pdf' },
-        { id: 3, name: 'File3.pdf' },
-      ];
+      let url = 'http://localhost:3000/pdfFilesTraining';
+      const response = await axios.get(url);
+      const pdfFiles = response.data;
 
-      setPdfFiles(fakePdfFiles);
+      setPdfFiles(pdfFiles);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching PDF files:', error);
@@ -52,19 +48,20 @@ const WorkoutList = () => {
         result = await DocumentPicker.getDocumentAsync({ type: 'application/pdf', copyToCacheDirectory: false });
       }
 
-      if (result.type === 'success') {
-        setSelectedPdf(result);
-
-        const fileUri = result.uri;
-        const fileName = fileUri.split('/').pop();
+      if (result) {
+        const fileUri = result.assets[0].uri;
+        const fileName = result.assets[0].name;
         const formData = new FormData();
+
         formData.append('pdf', {
           uri: fileUri,
           name: fileName,
           type: 'application/pdf',
         });
+        formData.append('name', fileName);
+        formData.append('description', 'Descripción');
 
-        const response = await fetch('http://localhost:3000//uploadPdf', {
+        const response = await fetch('http://localhost:3000/uploadPdfTaining', {
           method: 'POST',
           body: formData,
           headers: {
@@ -77,8 +74,6 @@ const WorkoutList = () => {
         } else {
           Alert.alert('Error', 'Ha ocurrido un error al subir el archivo PDF');
         }
-
-        Alert.alert('Éxito', 'El PDF se ha subido correctamente');
       } else {
         Alert.alert('Error', 'No se ha seleccionado ningún archivo PDF');
       }
@@ -96,19 +91,55 @@ const WorkoutList = () => {
     );
   }
 
+  const filteredDiet = pdfFiles.filter(workout => {
+    const normalizedSearchText = searchText.toLowerCase();
+    const normalizedUserName = workout.name.toLowerCase();
+
+    return normalizedUserName.includes(normalizedSearchText);
+  });
+
   return (
-    <View style={styles.container}>
+    <>
+      <View style={styles.background}></View>
+      <Image
+        source={require('../assets/KM-white.png')}
+        style={styles.image}
+      />
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Buscar por nombre"
+        value={searchText}
+        onChangeText={text => setSearchText(text)}
+      />
       <FlatList
-        data={pdfFiles}
-        keyExtractor={(pdf) => pdf.id.toString()}
+        data={filteredDiet}
+        keyExtractor={(pdf) => pdf._id.toString()}
         renderItem={renderPdfItem}
       />
       <Button title="Subir PDF" onPress={uploadPdf} />
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    position: 'absolute',
+    backgroundColor: '#069af1',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: -1,
+  },
+  image: {
+    position: 'absolute',
+    resizeMode: 'contain',
+    zIndex: 0,
+    height: 200,
+    width: 200,
+    alignSelf: 'center',
+    top: '40%',
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
