@@ -1,0 +1,132 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { View, TextInput, StyleSheet, Text, FlatList, Button } from 'react-native';
+import { CheckBox } from 'react-native-elements';
+
+const AssignDietView = ({ navigation, route }) => {
+  // const { dietId } = route.params;
+  const dietId = '662479fce912697ed5f1de3e';
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState('');
+  const [userCheckboxes, setUserCheckboxes] = useState({});
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/users', {
+        params: {
+          field: 'name,mealPlan,lastUpdate'
+        }
+      });
+      const { data } = response.data;
+      const users = data.users
+      setUsers(users);
+      setLoading(false);
+      initializeCheckboxes(data.users);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setLoading(false);
+    }
+  };
+
+  const initializeCheckboxes = (users) => {
+    const checkboxes = {};
+    users.forEach(user => {
+      checkboxes[user._id] = user.mealPlan == dietId;
+    });
+    setUserCheckboxes(checkboxes);
+  };
+
+  const renderUserItem = ({ item }) => {
+    const fecha = new Date(item.lastUpdateMeal);
+    const dia = fecha.getDate();
+    const mes = fecha.getMonth() + 1;
+    const anio = fecha.getFullYear();
+    const fechaFormateada = `${dia < 10 ? '0' + dia : dia}/${mes < 10 ? '0' + mes : mes}/${anio}`;
+
+    const handleCheckboxChange = () => {
+      setUserCheckboxes(prevState => ({
+        ...prevState,
+        [item._id]: !prevState[item._id]
+      }));
+    };
+
+    return (
+      <View style={styles.userItem}>
+        <Text style={styles.userName}>{item.name}</Text>
+        <Text>{fechaFormateada}</Text>
+        <CheckBox
+          checked={userCheckboxes[item._id]}
+          onPress={handleCheckboxChange}
+        />
+      </View>
+    );
+  };
+
+  const handleSearch = (text) => {
+    setSearchText(text);
+  };
+
+  const filteredUsers = users.filter(user => {
+    const normalizedSearchText = searchText.toLowerCase();
+    const normalizedUserName = user.name.toLowerCase();
+
+    return normalizedUserName.includes(normalizedSearchText);
+  });
+
+  const handleSaveChanges = async () => {
+    try {
+      const updatedUsers = users.map(async user => {
+        if (userCheckboxes[user._id]) {
+          await axios.put(`http://localhost:3000/users/${user._id}`, { mealPlan: dietId });
+          return { ...user, mealPlan: dietId };
+        }
+
+        return user;
+      });
+
+      await Promise.all(updatedUsers);
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error al guardar cambios:', error);
+    }
+  };
+
+  return (
+    <>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Buscar usuario"
+        value={searchText}
+        onChangeText={handleSearch}
+      />
+      <FlatList
+        data={filteredUsers}
+        keyExtractor={(user) => user._id.toString()}
+        renderItem={renderUserItem}
+      />
+      <Button title="Guardar" onPress={handleSaveChanges} />
+
+    </>
+  )
+};
+
+const styles = StyleSheet.create({
+  userItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  userName: {
+    marginRight: 'auto',
+  },
+});
+
+export default AssignDietView;

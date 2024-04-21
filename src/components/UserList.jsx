@@ -15,7 +15,7 @@ const UserList = ({ navigation }) => {
     try {
       const response = await axios.get('http://localhost:3000/users', {
         params: {
-          fields: 'email,name'
+          field: 'name'
         }
       });
       const { data } = response.data;

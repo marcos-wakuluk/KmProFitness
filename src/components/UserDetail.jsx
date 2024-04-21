@@ -53,7 +53,7 @@ const UserDetail = ({ route }) => {
           <Text style={styles.userInfo}>{`Nombre: ${user.name}`}</Text>
           <Text style={styles.userInfo}>{`Edad: ${calculateAge(user.birthday)}`}</Text>
           <Text style={styles.userInfo}>{`Email: ${user.email}`}</Text>
-          <Text style={styles.userInfo}>{`Pesotelefono: ${user.phone}`}</Text>
+          <Text style={styles.userInfo}>{`Telefono: ${user.phone}`}</Text>
           <Text style={styles.userInfo}>{`Peso: ${user.height}`}</Text>
           <Text style={styles.userInfo}>{`Altura: ${user.weight}`}</Text>
         </View>
