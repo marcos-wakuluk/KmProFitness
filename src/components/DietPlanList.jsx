@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet, Alert, Platform } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet, Alert, Platform, Image, TextInput } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import axios from 'axios';
 
@@ -7,6 +7,7 @@ const DietPlanList = ({ navigation }) => {
   const [pdfFiles, setPdfFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPdf, setSelectedPdf] = useState(null);
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
     fetchPdfFiles();
@@ -14,7 +15,8 @@ const DietPlanList = ({ navigation }) => {
 
   const fetchPdfFiles = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/pdfFiles');
+      let url = 'http://localhost:3000/pdfFiles';
+      const response = await axios.get(url);
       const pdfFiles = response.data;
 
       setPdfFiles(pdfFiles);
@@ -24,7 +26,6 @@ const DietPlanList = ({ navigation }) => {
       setLoading(false);
     }
   };
-
 
   const renderPdfItem = ({ item }) => (
     <View style={styles.pdfItem}>
@@ -76,7 +77,6 @@ const DietPlanList = ({ navigation }) => {
     }
   };
 
-
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -85,23 +85,60 @@ const DietPlanList = ({ navigation }) => {
     );
   }
 
+  const filteredDiet = pdfFiles.filter(diet => {
+    const normalizedSearchText = searchText.toLowerCase();
+    const normalizedUserName = diet.name.toLowerCase();
+
+    return normalizedUserName.includes(normalizedSearchText);
+  });
+
   return (
-    <View style={styles.container}>
+    <>
+      <View style={styles.background}></View>
+      <Image
+        source={require('../assets/KM-white.png')}
+        style={styles.image}
+      />
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Buscar por nombre"
+        value={searchText}
+        onChangeText={text => setSearchText(text)}
+      />
       <FlatList
-        data={pdfFiles}
+        data={filteredDiet}
         keyExtractor={(pdf) => pdf._id.toString()}
         renderItem={renderPdfItem}
       />
       <Button title="Subir PDF" onPress={uploadPdf} />
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-    padding: 16,
+  searchInput: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+  },
+  background: {
+    position: 'absolute',
+    backgroundColor: '#069af1',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: -1,
+  },
+  image: {
+    position: 'absolute',
+    resizeMode: 'contain',
+    zIndex: 0,
+    height: 200,
+    width: 200,
+    alignSelf: 'center',
+    top: '40%',
   },
   loadingContainer: {
     flex: 1,
