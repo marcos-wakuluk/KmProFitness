@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import { TextInput, Button, ActivityIndicator } from 'react-native-paper';
 import { useRoute } from '@react-navigation/native';
 import { calculateAge } from '../utils/functions';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 const Profile = () => {
   const route = useRoute();
   const { userId } = route.params || {};
+
   const [user, setUser] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -17,6 +18,7 @@ const Profile = () => {
   const [height, setHeight] = useState('');
   const [profileImage, setProfileImage] = useState(require('../assets/user-default.png'));
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     fetchUser();
@@ -85,6 +87,15 @@ const Profile = () => {
       console.error('Error al seleccionar la imagen:', error);
     }
   };
+
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <>
@@ -164,6 +175,11 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: -1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
     position: 'absolute',
