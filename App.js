@@ -13,6 +13,7 @@ import UserList from './src/components/UserList';
 import DietPlanList from './src/components/DietPlanList';
 import WorkoutList from './src/components/WorkoutList';
 import UserDetail from './src/components/UserDetail';
+import AssignDietView from './src/components/AssignDietView';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,7 @@ export default function App() {
           <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="UserList" component={UserList} />
           <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="UserDetail" component={UserDetail} />
           <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="DietPlanList" component={DietPlanList} />
+          <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="AssignDietView" component={AssignDietView} />
           <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="WorkoutList" component={WorkoutList} />
           <Stack.Screen options={{ headerTitle: '', headerBackTitle: '', headerLeft: null }} name="DietPlanScreen" component={DietPlanScreen} />
         </Stack.Navigator>

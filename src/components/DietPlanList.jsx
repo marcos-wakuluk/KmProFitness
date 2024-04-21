@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet, Alert, Platform } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
+import axios from 'axios';
 
-const DietPlanList = () => {
+const DietPlanList = ({ navigation }) => {
   const [pdfFiles, setPdfFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPdf, setSelectedPdf] = useState(null);
@@ -17,9 +18,9 @@ const DietPlanList = () => {
       // Puedes hacer una solicitud a tu servidor o cargar archivos localmente
       // En este ejemplo, simplemente cargamos una lista ficticia
       const fakePdfFiles = [
-        { id: 1, name: 'File1.pdf' },
-        { id: 2, name: 'File2.pdf' },
-        { id: 3, name: 'File3.pdf' },
+        { _id: 1, name: 'File1.pdf' },
+        { _id: 2, name: 'File2.pdf' },
+        { _id: 3, name: 'File3.pdf' },
       ];
 
       setPdfFiles(fakePdfFiles);
@@ -33,15 +34,9 @@ const DietPlanList = () => {
   const renderPdfItem = ({ item }) => (
     <View style={styles.pdfItem}>
       <Text>{item.name}</Text>
-      <Button title="Asignar a Cliente" onPress={() => assignToClient(item.id)} />
+      <Button title="Asignar a Cliente" onPress={() => navigation.navigate('AssignDietView', { dietId: item._id })} />
     </View>
   );
-
-  const assignToClient = (pdfId) => {
-    // Aquí puedes implementar la lógica para asignar el PDF al cliente seleccionado
-    // Puedes abrir un modal para seleccionar el cliente o realizar alguna otra acción
-    console.log(`Asignar PDF ${pdfId} a un cliente`);
-  };
 
   const uploadPdf = async () => {
     try {
@@ -52,10 +47,8 @@ const DietPlanList = () => {
         result = await DocumentPicker.getDocumentAsync({ type: 'application/pdf', copyToCacheDirectory: false });
       }
 
-      if (result.type === 'success') {
-        setSelectedPdf(result);
-
-        const fileUri = result.uri;
+      if (result) {
+        const fileUri = result.assets[0].uri;
         const fileName = fileUri.split('/').pop();
         const formData = new FormData();
         formData.append('pdf', {
@@ -63,8 +56,10 @@ const DietPlanList = () => {
           name: fileName,
           type: 'application/pdf',
         });
+        formData.append('name', fileName);
+        formData.append('description', 'Descripción');
 
-        const response = await fetch('http://localhost:3000//uploadPdf', {
+        const response = await fetch('http://localhost:3000/uploadPdf', {
           method: 'POST',
           body: formData,
           headers: {
@@ -77,8 +72,6 @@ const DietPlanList = () => {
         } else {
           Alert.alert('Error', 'Ha ocurrido un error al subir el archivo PDF');
         }
-
-        Alert.alert('Éxito', 'El PDF se ha subido correctamente');
       } else {
         Alert.alert('Error', 'No se ha seleccionado ningún archivo PDF');
       }
@@ -87,6 +80,7 @@ const DietPlanList = () => {
       Alert.alert('Error', 'Ha ocurrido un error al seleccionar el archivo PDF');
     }
   };
+
 
   if (loading) {
     return (
@@ -100,7 +94,7 @@ const DietPlanList = () => {
     <View style={styles.container}>
       <FlatList
         data={pdfFiles}
-        keyExtractor={(pdf) => pdf.id.toString()}
+        keyExtractor={(pdf) => pdf._id.toString()}
         renderItem={renderPdfItem}
       />
       <Button title="Subir PDF" onPress={uploadPdf} />
