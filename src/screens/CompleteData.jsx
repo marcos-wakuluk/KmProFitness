@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Image, Alert } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
+import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
-const Profile = () => {
+const Profile = ({ user }) => {
   const navigation = useNavigation();
 
-  const [biceps, setBiceps] = useState(0);
-  const [waist, setWaist] = useState(0);
-  const [thigh, setThigh] = useState(0);
-  const [chest, setChest] = useState(0);
-  const [weight, setWeight] = useState(0);
+  const [biceps, setBiceps] = useState(user.details[0].biceps || 0);
+  const [waist, setWaist] = useState(user.details[0].waist || 0);
+  const [thigh, setThigh] = useState(user.details[0].thigh || 0);
+  const [chest, setChest] = useState(user.details[0].chest || 0);
+  const [weight, setWeight] = useState(user.details[0].weight || 0);
 
   const handleSave = async () => {
     try {
-      const userData = {
+      const updateUser = {
         biceps: parseInt(biceps),
         waist: parseInt(waist),
         thigh: parseInt(thigh),
@@ -22,17 +23,10 @@ const Profile = () => {
         weight: parseInt(weight),
       };
 
-      await fetch('http://localhost:3000/saveInitialData', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
+      const response = await axios.put(`http://localhost:3000/usersDetails/${user._id}`, updateUser);
 
-      [setBiceps, setWaist, setThigh, setChest, setWeight].forEach(setState => setState(0));
       Alert.alert('Datos guardados exitosamente', '', [
-        { text: 'OK', onPress: () => navigation.navigate('Home') }
+        { text: 'OK', onPress: () => navigation.navigate('Home', { user: response.data.data.user }) }
       ]);
     } catch (error) {
       console.error('Error al guardar los datos del usuario:', error);
@@ -49,35 +43,35 @@ const Profile = () => {
       />
       <TextInput
         label="Circunferencia de biceps (cm)"
-        value={biceps.toString()}
+        value={biceps?.toString()}
         onChangeText={setBiceps}
         keyboardType="numeric"
         style={styles.input}
       />
       <TextInput
         label="Circunferencia de cintura (cm)"
-        value={waist.toString()}
+        value={waist?.toString()}
         onChangeText={setWaist}
         keyboardType="numeric"
         style={styles.input}
       />
       <TextInput
         label="Circunferencia de muslo (cm)"
-        value={thigh.toString()}
+        value={thigh?.toString()}
         onChangeText={setThigh}
         keyboardType="numeric"
         style={styles.input}
       />
       <TextInput
         label="Circunferencia de pecho (cm)"
-        value={chest.toString()}
+        value={chest?.toString()}
         onChangeText={setChest}
         keyboardType="numeric"
         style={styles.input}
       />
       <TextInput
         label="Peso (Kg)"
-        value={weight.toString()}
+        value={weight?.toString()}
         onChangeText={setWeight}
         keyboardType="numeric"
         style={styles.input}
