@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
 import AdminView from './AdminView';
 import ClientView from './ClientView';
 import CompletedData from '../screens/CompleteData';
-import MonthlyCheckup from './monthlyCheckup';
 
 const Home = ({ navigation }) => {
   const route = useRoute();
   const { user } = route.params || {};
-  const isAdmin = user.email === "wakuluk@gmail.com";
-  const completedData = false
 
+  const isAdmin = user.email === "wakuluk@gmail.com";
+  const completedData = user.newUser ?? true
   const [monthlyCheckup, setMonthlyCheckup] = useState(false);
 
   const currentDate = new Date();
@@ -30,7 +29,10 @@ const Home = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {isAdmin && <AdminView navigation={navigation} />}
-      {!isAdmin && completedData ? <CompletedData /> : monthlyCheckup ? <MonthlyCheckup /> : <ClientView navigation={navigation} user={user} />}
+      {/* {isAdmin && <AdminView navigation={navigation} />}
+      {!isAdmin && completedData ? <CompletedData /> : monthlyCheckup ? <MonthlyCheckup /> : <ClientView navigation={navigation} user={user} />} */}
+      {/* {completedData ? <CompletedData user={user} /> : <CompletedData user={user} />} */}
+      <ClientView navigation={navigation} user={user} />
     </View>
   );
 };

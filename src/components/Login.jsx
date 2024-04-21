@@ -17,7 +17,8 @@ const defaultUser = {
   name: "new user",
   picture: "https://lh3.googleusercontent.com/a/ACg8ocLg_92IAMlHWAjDVpVScBuHtywJvtcNTZ55I_4_c0h2xNDXCnC-=s96-c",
   verified_email: true,
-  phone: "3584315362"
+  phone: "3584315362",
+  newUser: false
 }
 
 const Login = ({ navigation }) => {
