@@ -1,41 +1,66 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
+import { useRoute } from '@react-navigation/native';
+import { calculateAge } from '../utils/functions';
+import axios from 'axios';
+import * as ImagePicker from 'expo-image-picker';
 
 const Profile = () => {
+  const route = useRoute();
+  const { userId } = route.params || {};
+  const [user, setUser] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [age, setAge] = useState('');
-  const [height, setHeight] = useState(0);
-  const [weight, setWeight] = useState(0);
-  const [profileImage, setProfileImage] = useState(null);
+  const [age, setAge] = useState(calculateAge(''));
+  const [weight, setWeight] = useState('');
+  const [height, setHeight] = useState('');
+  const [profileImage, setProfileImage] = useState(require('../assets/user-default.png'));
   const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
-    fetchUsers();
+    fetchUser();
   }, []);
 
-  const fetchUsers = async () => {
+  const fetchUser = async () => {
     try {
-      const userId = '65b19269aec0c74211e854a4'
-      const response = await fetch(`http://localhost:3000/users/${userId}`);
-      const user = await response.json();
-      setProfileImage(user.image)
-      setName(user.name);
-      setPhone(user.phoneNumber);
-      setHeight(user.height);
-      setWeight(user.weight);
-      calcularEdad(user.dateOfBirth)
+      const response = await axios.get(`http://localhost:3000/users/${userId}`);
+      const userData = response.data.data;
+      initializeUserData(userData.user)
+      setLoading(false);
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('Error fetching user:', error);
+      setLoading(false);
     }
+  };
+
+  const initializeUserData = (userData) => {
+    setUser(userData);
+    setName(userData.name || '');
+    setPhone(userData.phone || '');
+    setAge(calculateAge(userData.birthday || ''));
+    setWeight(userData.weight || '');
+    setHeight(userData.height || '');
   };
 
   const handleSave = async () => {
     try {
-      // TODO: Realizar la lógica de guardar aquí
+      const updatedUser = {
+        name,
+        phone,
+        weight,
+        height
+      };
 
-      // TODO: Cambiar a modo de edición después de guardar
+      const response = await axios.put(`http://localhost:3000/users/${user._id}`, updatedUser);
+
+      const updatedUserData = response.data.data.user;
+      setName(updatedUserData.name);
+      setPhone(updatedUserData.phone);
+      setAge(calculateAge(updatedUserData.birthday));
+      setWeight(updatedUserData.weight);
+      setHeight(updatedUserData.height);
+
       setEditMode(false);
     } catch (error) {
       console.error('Error al guardar los datos del usuario:', error);
@@ -46,18 +71,19 @@ const Profile = () => {
     setEditMode(!editMode);
   };
 
-  const handleImagePick = () => {
-    // TODO: Handle profile image pick
-  };
+  const handleImagePick = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
 
-  const calcularEdad = (date) => {
-    const fechaNacimientoDate = new Date(date);
-    const fechaActual = new Date();
-
-    const diferenciaMilisegundos = fechaActual - fechaNacimientoDate;
-    const edadCalculada = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60 * 24 * 365.25));
-
-    setAge(edadCalculada);
+      setProfileImage(result.assets[0].uri);
+    } catch (error) {
+      console.error('Error al seleccionar la imagen:', error);
+    }
   };
 
   return (
@@ -69,7 +95,7 @@ const Profile = () => {
       />
       <View style={styles.container}>
         <Image
-          source={profileImage || require('../assets/user-default.png')}
+          source={profileImage}
           style={styles.profileImage}
         />
         <Button
@@ -88,7 +114,7 @@ const Profile = () => {
         />
         <TextInput
           label="Telefono"
-          value={phone}
+          value={phone.toString()}
           onChangeText={setPhone}
           keyboardType="phone-pad"
           editable={editMode}
@@ -104,16 +130,16 @@ const Profile = () => {
         />
         <TextInput
           label="Altura"
-          value={height}
-          onChangeText={setHeight}
+          value={weight.toString()}
+          onChangeText={setWeight}
           keyboardType="numeric"
           editable={editMode}
           style={styles.input}
         />
         <TextInput
           label="Peso"
-          value={weight}
-          onChangeText={setWeight}
+          value={height.toString()}
+          onChangeText={setHeight}
           keyboardType="numeric"
           editable={editMode}
           style={styles.input}

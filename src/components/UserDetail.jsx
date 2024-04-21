@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Image, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import axios from 'axios';
+import { calculateAge } from '../utils/functions';
 
 const UserDetail = ({ route }) => {
   const { userId } = route.params;
@@ -31,15 +32,6 @@ const UserDetail = ({ route }) => {
       </View>
     );
   }
-
-  const calculateAge = (birthday) => {
-    const currentDate = new Date();
-    const birthDate = new Date(birthday);
-    let ageDiff = currentDate - birthDate;
-    const age = Math.floor(ageDiff / (1000 * 60 * 60 * 24 * 365));
-
-    return age;
-  };
 
   return (
     <>
