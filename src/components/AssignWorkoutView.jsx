@@ -3,8 +3,8 @@ import axios from 'axios';
 import { View, TextInput, StyleSheet, Text, FlatList, Button, Image, ActivityIndicator } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
-const AssignDietView = ({ navigation, route }) => {
-  const { dietId } = route.params;
+const AssignWorkoutView = ({ navigation, route }) => {
+  const { workoutId } = route.params;
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
@@ -18,7 +18,7 @@ const AssignDietView = ({ navigation, route }) => {
     try {
       const response = await axios.get('http://localhost:3000/users', {
         params: {
-          field: 'name,mealPlan,lastUpdate'
+          field: 'name,trainingPlan,lastUpdate'
         }
       });
       const { data } = response.data;
@@ -32,16 +32,24 @@ const AssignDietView = ({ navigation, route }) => {
     }
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   const initializeCheckboxes = (users) => {
     const checkboxes = {};
     users.forEach(user => {
-      checkboxes[user._id] = user.mealPlan == dietId;
+      checkboxes[user._id] = user.trainingPlan == workoutId;
     });
     setUserCheckboxes(checkboxes);
   };
 
   const renderUserItem = ({ item }) => {
-    const fecha = new Date(item.lastUpdateMeal);
+    const fecha = new Date(item.lastUpdateTraining);
     const dia = fecha.getDate();
     const mes = fecha.getMonth() + 1;
     const anio = fecha.getFullYear();
@@ -81,8 +89,8 @@ const AssignDietView = ({ navigation, route }) => {
     try {
       const updatedUsers = users.map(async user => {
         if (userCheckboxes[user._id]) {
-          await axios.put(`http://localhost:3000/users/${user._id}`, { mealPlan: dietId });
-          return { ...user, mealPlan: dietId };
+          await axios.put(`http://localhost:3000/users/${user._id}`, { trainingPlan: workoutId });
+          return { ...user, trainingPlan: workoutId };
         }
 
         return user;
@@ -94,14 +102,6 @@ const AssignDietView = ({ navigation, route }) => {
       console.error('Error al guardar cambios:', error);
     }
   };
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
 
   return (
     <>
@@ -153,14 +153,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
-  userName: {
-    marginRight: 'auto',
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  userName: {
+    marginRight: 'auto',
+  },
 });
 
-export default AssignDietView;
+export default AssignWorkoutView;

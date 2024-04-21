@@ -3,7 +3,7 @@ import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet, Alert, Pla
 import * as DocumentPicker from 'expo-document-picker';
 import axios from 'axios';
 
-const WorkoutList = () => {
+const WorkoutList = ({ navigation }) => {
   const [pdfFiles, setPdfFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
@@ -29,7 +29,7 @@ const WorkoutList = () => {
   const renderPdfItem = ({ item }) => (
     <View style={styles.pdfItem}>
       <Text>{item.name}</Text>
-      <Button title="Asignar a Cliente" onPress={() => assignToClient(item.id)} />
+      <Button title="Asignar a Cliente" onPress={() => navigation.navigate('AssignWorkoutView', { workoutId: item._id })} />
     </View>
   );
 
