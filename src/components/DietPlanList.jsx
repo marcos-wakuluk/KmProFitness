@@ -14,22 +14,17 @@ const DietPlanList = ({ navigation }) => {
 
   const fetchPdfFiles = async () => {
     try {
-      // Aquí deberías realizar la lógica para obtener la lista de archivos PDF
-      // Puedes hacer una solicitud a tu servidor o cargar archivos localmente
-      // En este ejemplo, simplemente cargamos una lista ficticia
-      const fakePdfFiles = [
-        { _id: 1, name: 'File1.pdf' },
-        { _id: 2, name: 'File2.pdf' },
-        { _id: 3, name: 'File3.pdf' },
-      ];
+      const response = await axios.get('http://localhost:3000/pdfFiles');
+      const pdfFiles = response.data;
 
-      setPdfFiles(fakePdfFiles);
+      setPdfFiles(pdfFiles);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching PDF files:', error);
       setLoading(false);
     }
   };
+
 
   const renderPdfItem = ({ item }) => (
     <View style={styles.pdfItem}>
