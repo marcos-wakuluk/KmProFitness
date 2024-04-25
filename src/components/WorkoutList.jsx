@@ -124,7 +124,7 @@ const WorkoutList = ({ navigation }) => {
 const styles = StyleSheet.create({
   background: {
     position: 'absolute',
-    backgroundColor: '#069af1',
+    backgroundColor: '#0061a7',
     top: 0,
     bottom: 0,
     left: 0,

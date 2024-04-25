@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 WebBrowser.maybeCompleteAuthSession();
 
 const defaultUser = {
-  email: "jonsnow@email.com",
+  email: "jonsnow@gmail.com",
   family_name: "user",
   given_name: "new",
   id: "102766186783018542527",

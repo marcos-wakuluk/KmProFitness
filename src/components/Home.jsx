@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-
 import AdminView from './AdminView';
 import ClientView from './ClientView';
 import CompletedData from '../screens/CompleteData';
@@ -10,7 +9,7 @@ const Home = ({ navigation }) => {
   const route = useRoute();
   const { user } = route.params || {};
 
-  const isAdmin = user.email === "wakuluk@gmail.com";
+  const isAdmin = user.email === "jonsnow@gmail.com";
   const completedData = user.newUser ?? true
   const [monthlyCheckup, setMonthlyCheckup] = useState(false);
 
@@ -29,10 +28,8 @@ const Home = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {isAdmin && <AdminView navigation={navigation} />}
-      {/* {isAdmin && <AdminView navigation={navigation} />}
-      {!isAdmin && completedData ? <CompletedData /> : monthlyCheckup ? <MonthlyCheckup /> : <ClientView navigation={navigation} user={user} />} */}
       {/* {completedData ? <CompletedData user={user} /> : <CompletedData user={user} />} */}
-      <ClientView navigation={navigation} user={user} />
+      {!isAdmin && <ClientView navigation={navigation} user={user} />}
     </View>
   );
 };
