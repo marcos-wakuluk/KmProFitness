@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 WebBrowser.maybeCompleteAuthSession();
 
 const defaultUser = {
-  email: "jonsnow@gmail.com",
+  email: "jonsnow@email.com",
   family_name: "user",
   given_name: "new",
   id: "102766186783018542527",
@@ -153,6 +153,7 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#0061a7',
     alignItems: 'center',
   },
   logo: {

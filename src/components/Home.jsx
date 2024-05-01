@@ -9,8 +9,9 @@ const Home = ({ navigation }) => {
   const route = useRoute();
   const { user } = route.params || {};
 
-  const isAdmin = user.email === "jonsnow@gmail.com";
-  const completedData = user.newUser ?? true
+  const isAdmin = user.email === "jonsnow@email.com";
+  // const completedData = user.newUser ?? true
+  // const completedData = true
   const [monthlyCheckup, setMonthlyCheckup] = useState(false);
 
   const currentDate = new Date();
@@ -28,6 +29,7 @@ const Home = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {isAdmin && <AdminView navigation={navigation} />}
+      {/* <CompletedData user={user} /> */}
       {/* {completedData ? <CompletedData user={user} /> : <CompletedData user={user} />} */}
       {!isAdmin && <ClientView navigation={navigation} user={user} />}
     </View>

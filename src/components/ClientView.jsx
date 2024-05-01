@@ -30,7 +30,7 @@ const ClientView = ({ navigation }) => {
             <Icon name="restaurant" size={30} color="black" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Workout')}>
-            <Icon name="fitness" size={30} color="black" />
+            <Icon name="barbell-sharp" size={40} color="black" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Payment')}>
             <Icon name="wallet" size={30} color="black" />
@@ -39,6 +39,7 @@ const ClientView = ({ navigation }) => {
         <Text style={styles.welcomeText}>{`Hola ${username}`}</Text>
         <Card phrases={motivationalQuotes} />
         <Card title={'Como llegar a mi objetivo --> link a pdf'} />
+        <Card title={'Recorda ir a entrenar hoy'} />
       </View>
 
       <View style={[styles.contactContainer, { backgroundColor: 'white' }]}>

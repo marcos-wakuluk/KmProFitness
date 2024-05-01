@@ -22,10 +22,9 @@ const AssignDietView = ({ navigation, route }) => {
         }
       });
       const { data } = response.data;
-      const users = data.users
-      setUsers(users);
-      setLoading(false);
+      setUsers(data.users);
       initializeCheckboxes(data.users);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching users:', error);
       setLoading(false);
@@ -35,9 +34,16 @@ const AssignDietView = ({ navigation, route }) => {
   const initializeCheckboxes = (users) => {
     const checkboxes = {};
     users.forEach(user => {
-      checkboxes[user._id] = user.mealPlan == dietId;
+      checkboxes[user._id] = user.mealPlan === dietId;
     });
     setUserCheckboxes(checkboxes);
+  };
+
+  const handleCheckboxChange = (userId) => {
+    setUserCheckboxes(prevState => ({
+      ...prevState,
+      [userId]: !prevState[userId]
+    }));
   };
 
   const renderUserItem = ({ item }) => {
@@ -47,20 +53,13 @@ const AssignDietView = ({ navigation, route }) => {
     const anio = fecha.getFullYear();
     const fechaFormateada = `${dia < 10 ? '0' + dia : dia}/${mes < 10 ? '0' + mes : mes}/${anio}`;
 
-    const handleCheckboxChange = () => {
-      setUserCheckboxes(prevState => ({
-        ...prevState,
-        [item._id]: !prevState[item._id]
-      }));
-    };
-
     return (
       <View style={styles.userItem}>
         <Text style={styles.userName}>{item.name}</Text>
         <Text>{fechaFormateada}</Text>
         <CheckBox
           checked={userCheckboxes[item._id]}
-          onPress={handleCheckboxChange}
+          onPress={() => handleCheckboxChange(item._id)}
         />
       </View>
     );
@@ -73,19 +72,19 @@ const AssignDietView = ({ navigation, route }) => {
   const filteredUsers = users.filter(user => {
     const normalizedSearchText = searchText.toLowerCase();
     const normalizedUserName = user.name.toLowerCase();
-
     return normalizedUserName.includes(normalizedSearchText);
   });
 
   const handleSaveChanges = async () => {
     try {
-      const updatedUsers = users.map(async user => {
+      const updatedUsers = filteredUsers.map(async user => {
         if (userCheckboxes[user._id]) {
           await axios.put(`http://localhost:3000/users/${user._id}`, { mealPlan: dietId });
           return { ...user, mealPlan: dietId };
+        } else {
+          await axios.put(`http://localhost:3000/users/${user._id}`, { mealPlan: null });
+          return { ...user, mealPlan: null };
         }
-
-        return user;
       });
 
       await Promise.all(updatedUsers);
@@ -123,7 +122,7 @@ const AssignDietView = ({ navigation, route }) => {
       />
       <Button title="Guardar" onPress={handleSaveChanges} />
     </>
-  )
+  );
 };
 
 const styles = StyleSheet.create({

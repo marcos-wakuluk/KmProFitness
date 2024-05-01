@@ -48,7 +48,7 @@ const UserList = ({ navigation }) => {
     return (
       <TouchableOpacity onPress={handleUserPress}>
         <View style={styles.userItem}>
-          <Text>{item.name}</Text>
+          <Text style={styles.userName}>{item.name}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -78,6 +78,7 @@ const UserList = ({ navigation }) => {
         data={filteredUsers}
         keyExtractor={(user) => user._id.toString()}
         renderItem={renderUserItem}
+        contentContainerStyle={styles.userList}
       />
     </>
   );
@@ -108,22 +109,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   userItem: {
-    padding: 16,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
+  userName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   searchInput: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: '#ccc',
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
+    fontSize: 16,
+    borderRadius: 8,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
+  userList: {
+    paddingBottom: 20, // Agrega espacio en la parte inferior de la lista
+  },
 });
 
 export default UserList;
