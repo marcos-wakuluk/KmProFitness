@@ -8,7 +8,6 @@ const AssignWorkoutView = ({ navigation, route }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
-  const [userCheckboxes, setUserCheckboxes] = useState({});
 
   useEffect(() => {
     fetchUsers();
@@ -22,13 +21,40 @@ const AssignWorkoutView = ({ navigation, route }) => {
         }
       });
       const { data } = response.data;
-      const users = data.users
-      setUsers(users);
+      setUsers(data.users);
       setLoading(false);
-      initializeCheckboxes(data.users);
     } catch (error) {
       console.error('Error fetching users:', error);
       setLoading(false);
+    }
+  };
+
+  const handleCheckboxChange = (userId) => {
+    const updatedUsers = users.map(user => {
+      if (user._id === userId) {
+        return { ...user, trainingPlan: user.trainingPlan === workoutId ? null : workoutId };
+      }
+      return user;
+    });
+    setUsers(updatedUsers);
+  };
+
+  const handleSearch = (text) => {
+    setSearchText(text);
+  };
+
+  const filteredUsers = users.filter(user => {
+    const normalizedSearchText = searchText.toLowerCase();
+    const normalizedUserName = user.name.toLowerCase();
+    return normalizedUserName.includes(normalizedSearchText);
+  });
+
+  const handleSaveChanges = async () => {
+    try {
+      await Promise.all(users.map(user => axios.put(`http://localhost:3000/users/${user._id}`, { trainingPlan: user.trainingPlan })));
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error al guardar cambios:', error);
     }
   };
 
@@ -40,14 +66,6 @@ const AssignWorkoutView = ({ navigation, route }) => {
     );
   }
 
-  const initializeCheckboxes = (users) => {
-    const checkboxes = {};
-    users.forEach(user => {
-      checkboxes[user._id] = user.trainingPlan == workoutId;
-    });
-    setUserCheckboxes(checkboxes);
-  };
-
   const renderUserItem = ({ item }) => {
     const fecha = new Date(item.lastUpdateTraining);
     const dia = fecha.getDate();
@@ -55,52 +73,16 @@ const AssignWorkoutView = ({ navigation, route }) => {
     const anio = fecha.getFullYear();
     const fechaFormateada = `${dia < 10 ? '0' + dia : dia}/${mes < 10 ? '0' + mes : mes}/${anio}`;
 
-    const handleCheckboxChange = () => {
-      setUserCheckboxes(prevState => ({
-        ...prevState,
-        [item._id]: !prevState[item._id]
-      }));
-    };
-
     return (
       <View style={styles.userItem}>
         <Text style={styles.userName}>{item.name}</Text>
         <Text>{fechaFormateada}</Text>
         <CheckBox
-          checked={userCheckboxes[item._id]}
-          onPress={handleCheckboxChange}
+          checked={item.trainingPlan === workoutId}
+          onPress={() => handleCheckboxChange(item._id)}
         />
       </View>
     );
-  };
-
-  const handleSearch = (text) => {
-    setSearchText(text);
-  };
-
-  const filteredUsers = users.filter(user => {
-    const normalizedSearchText = searchText.toLowerCase();
-    const normalizedUserName = user.name.toLowerCase();
-
-    return normalizedUserName.includes(normalizedSearchText);
-  });
-
-  const handleSaveChanges = async () => {
-    try {
-      const updatedUsers = users.map(async user => {
-        if (userCheckboxes[user._id]) {
-          await axios.put(`http://localhost:3000/users/${user._id}`, { trainingPlan: workoutId });
-          return { ...user, trainingPlan: workoutId };
-        }
-
-        return user;
-      });
-
-      await Promise.all(updatedUsers);
-      navigation.goBack();
-    } catch (error) {
-      console.error('Error al guardar cambios:', error);
-    }
   };
 
   return (
@@ -123,7 +105,7 @@ const AssignWorkoutView = ({ navigation, route }) => {
       />
       <Button title="Guardar" onPress={handleSaveChanges} />
     </>
-  )
+  );
 };
 
 const styles = StyleSheet.create({

@@ -19,7 +19,7 @@ const AdminView = ({ navigation }) => {
             <Icon name="restaurant" size={30} color="black" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('WorkoutList')}>
-            <Icon name="fitness" size={30} color="black" />
+            <Icon name="barbell-sharp" size={40} color="black" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Payment')}>
             <Icon name="wallet" size={30} color="black" />
