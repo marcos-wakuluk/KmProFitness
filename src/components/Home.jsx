@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useRoute } from '@react-navigation/native';
-import AdminView from './AdminView';
-import ClientView from './ClientView';
-import CompletedData from '../screens/CompleteData';
+import React, { useState } from "react";
+import { View, StyleSheet } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import AdminView from "./AdminView";
+import ClientView from "./ClientView";
+import CompletedData from "../screens/CompleteData";
 
 const Home = ({ navigation }) => {
   const route = useRoute();
   const { user } = route.params || {};
+  console.log("🚀 ~ Home ~ user:", user);
 
-  const isAdmin = user.email === "jonsnow@email.com";
+  const isAdmin = user.email === "jonsnow1@email.com";
   // const completedData = user.newUser ?? true
   // const completedData = true
   const [monthlyCheckup, setMonthlyCheckup] = useState(false);
@@ -39,7 +40,7 @@ const Home = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
 });
 

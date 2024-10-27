@@ -5,27 +5,14 @@ import { Input } from "react-native-elements";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { FontAwesome } from "@expo/vector-icons";
 WebBrowser.maybeCompleteAuthSession();
-
-const defaultUser = {
-  email: "jonsnow@email.com",
-  family_name: "user",
-  given_name: "new",
-  id: "102766186783018542527",
-  locale: "en",
-  name: "new user",
-  picture: "https://lh3.googleusercontent.com/a/ACg8ocLg_92IAMlHWAjDVpVScBuHtywJvtcNTZ55I_4_c0h2xNDXCnC-=s96-c",
-  verified_email: true,
-  phone: "3584315362",
-  newUser: false,
-};
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userInfo, setUserInfo] = useState(null);
-
+  const [showPassword, setShowPassword] = useState(false);
   const [request, response, promptAsync] = Google.useAuthRequest({
     iosClientId: process.env.CLIENT_ID_IOS,
     webClientId: process.env.CLIENT_ID_WEB,
@@ -50,7 +37,6 @@ const Login = ({ navigation }) => {
   const getLocalUser = async () => {
     const data = await AsyncStorage.getItem("@user");
     if (!data) return null;
-
     return JSON.parse(data);
   };
 
@@ -69,23 +55,21 @@ const Login = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    signInWithGoogle();
-  }, [response]);
-
-  const signInWithGoogle = async () => {
+  const handleLogin = async () => {
     try {
-      const userJSON = await AsyncStorage.getItem("@user");
+      const response = await axios.post("http://localhost:3000/auth/login", { email, pass: password });
+      const user = response.data.user;
 
-      if (userJSON) {
-        setUserInfo(JSON.parse(userJSON));
-      } else if (response?.type === "success") {
-        const userInfo = await getUserInfo(response.authentication.accessToken);
-        await axios.post("http://localhost:3000/users", userInfo);
-        navigation.navigate("Home", { user: userInfo });
+      if (user) {
+        console.log("🚀 ~ handleLogin ~ user:", user);
+        await AsyncStorage.setItem("@user", JSON.stringify(user));
+        navigation.navigate("Home", { user });
+      } else {
+        alert("Usuario o contraseña incorrectos.");
       }
     } catch (error) {
-      console.error("Error retrieving user data from AsyncStorage:", error);
+      console.error("Error al iniciar sesión:", error);
+      alert("Error al iniciar sesión. Por favor, verifica tus credenciales.");
     }
   };
 
@@ -93,38 +77,43 @@ const Login = ({ navigation }) => {
     navigation.navigate("Signin");
   };
 
-  const handleLogin = async () => {
-    let user = await axios.post("http://localhost:3000/users", defaultUser);
-    navigation.navigate("Home", { user: user.data.data.user });
-  };
-
-  const handleforgotPassword = () => {
+  const handleForgotPassword = () => {
     navigation.navigate("PasswordRecovery");
   };
 
   return (
     <View style={styles.container}>
       <Image source={require("../assets/KM-color-black.png")} style={styles.logo} />
-      <Input placeholder="Email" value={email} onChangeText={setEmail} />
-      <Input placeholder="Contraseña" value={password} onChangeText={setPassword} secureTextEntry />
-      {!userInfo ? (
-        <View>
-          <Button title="sign in with google" disabled={!request} onPress={() => promptAsync()} />
-        </View>
-      ) : (
-        <View>
-          {userInfo?.picture && <Image source={{ uri: userInfo.picture }} />}
-          <Button title="Remove Local Storage" onPress={async () => await AsyncStorage.removeItem("@user")} />
-        </View>
-      )}
+      <Input
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        containerStyle={styles.inputContainer}
+        inputStyle={styles.input}
+        leftIcon={{ type: "font-awesome", name: "envelope", color: "#fff" }}
+      />
+      <Input
+        placeholder="Contraseña"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry={!showPassword}
+        containerStyle={styles.inputContainer}
+        inputStyle={styles.input}
+        leftIcon={{ type: "font-awesome", name: "lock", color: "#fff" }}
+        rightIcon={
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <FontAwesome name={showPassword ? "eye" : "eye-slash"} size={24} color="#fff" />
+          </TouchableOpacity>
+        }
+      />
+      <TouchableOpacity onPress={handleForgotPassword}>
+        <Text style={styles.forgotPasswordText}>Olvido su contraseña?</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <Text style={styles.loginButtonText}>LOGIN</Text>
+      </TouchableOpacity>
       <TouchableOpacity onPress={handleRegister}>
-        <Text>Registrarse</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleforgotPassword}>
-        <Text>Olvido su contraseña?</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleLogin}>
-        <Text>LOGIN</Text>
+        <Text style={styles.registerText}>¿No tienes una cuenta? Registrarse</Text>
       </TouchableOpacity>
     </View>
   );
@@ -135,12 +124,43 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0061a7",
     alignItems: "center",
+    padding: 20,
   },
   logo: {
     width: 275,
     height: 150,
     marginTop: "20%",
-    marginBottom: "20%",
+    marginBottom: "10%",
+  },
+  inputContainer: {
+    width: "100%",
+    marginBottom: 15,
+  },
+  input: {
+    color: "#fff",
+  },
+  forgotPasswordText: {
+    color: "#fff",
+    marginBottom: 20,
+    textAlign: "right",
+  },
+  loginButton: {
+    backgroundColor: "#00aaff",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 5,
+    marginVertical: 10,
+    width: "100%",
+    alignItems: "center",
+  },
+  loginButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  registerText: {
+    color: "#fff",
+    marginTop: 15,
   },
 });
 

@@ -10,14 +10,16 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "jsEngine": "hermes",
     "ios": {
       "jsEngine": "jsc",
       "supportsTablet": true,
       "bundleIdentifier": "com.WakulukMarcos.kmprofitness"
+    },
+    "infoPlist": {
+      "NSLocationWhenInUseUsageDescription": "This app uses your location to show nearby locations.",
+      "NSPhotoLibraryUsageDescription": "This app needs access to your photo library."
     },
     "android": {
       "package": "com.WakulukMarcos.kmprofitness",

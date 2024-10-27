@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions, Image, ImageBackground } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, Dimensions, Image, ImageBackground } from "react-native";
 // import Pdf from 'react-native-pdf';
 
 const DietPlanScreen = () => {
@@ -59,10 +59,7 @@ const DietPlanScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.overlay}>
-        <Image
-          source={require('../assets/KM-white.png')}
-          style={styles.image}
-        />
+        <Image source={require("../assets/KM-white.png")} style={styles.image} />
       </View>
     </View>
   );
@@ -71,17 +68,17 @@ const DietPlanScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0061a7',
+    backgroundColor: "#0061a7",
   },
   overlay: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   image: {
     width: 200,
     height: 200,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
 });
 
