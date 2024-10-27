@@ -8,10 +8,9 @@ import CompletedData from "../screens/CompleteData";
 const Home = ({ navigation }) => {
   const route = useRoute();
   const { user } = route.params || {};
-  console.log("🚀 ~ Home ~ user:", user);
 
-  const isAdmin = user.email === "jonsnow1@email.com";
-  // const completedData = user.newUser ?? true
+  const isAdmin = user.isAdmin === true;
+  const completedData = user.newUser;
   // const completedData = true
   const [monthlyCheckup, setMonthlyCheckup] = useState(false);
 
@@ -31,8 +30,8 @@ const Home = ({ navigation }) => {
     <View style={styles.container}>
       {isAdmin && <AdminView navigation={navigation} />}
       {/* <CompletedData user={user} /> */}
-      {/* {completedData ? <CompletedData user={user} /> : <CompletedData user={user} />} */}
-      {!isAdmin && <ClientView navigation={navigation} user={user} />}
+      {completedData && <CompletedData user={user} />}
+      {!completedData && !isAdmin && <ClientView navigation={navigation} user={user} />}
     </View>
   );
 };

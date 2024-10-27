@@ -9,7 +9,7 @@ import { useRoute } from "@react-navigation/native";
 const ClientView = ({ navigation }) => {
   const route = useRoute();
   const { user } = route.params;
-  const username = user.email;
+  const username = user.name;
 
   return (
     <View style={styles.container}>

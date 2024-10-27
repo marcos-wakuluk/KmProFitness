@@ -34,6 +34,22 @@ const Login = ({ navigation }) => {
     }
   }
 
+  useEffect(() => {
+    checkIfUserIsLoggedIn();
+  }, []);
+
+  const checkIfUserIsLoggedIn = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem("@user");
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        navigation.navigate("Home", { user });
+      }
+    } catch (error) {
+      console.error("Error verificando la sesión:", error);
+    }
+  };
+
   const getLocalUser = async () => {
     const data = await AsyncStorage.getItem("@user");
     if (!data) return null;
@@ -61,7 +77,6 @@ const Login = ({ navigation }) => {
       const user = response.data.user;
 
       if (user) {
-        console.log("🚀 ~ handleLogin ~ user:", user);
         await AsyncStorage.setItem("@user", JSON.stringify(user));
         navigation.navigate("Home", { user });
       } else {
