@@ -1,4 +1,3 @@
-import { SafeAreaView } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Login from "./src/components/Login";

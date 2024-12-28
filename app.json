@@ -15,18 +15,22 @@
     "ios": {
       "jsEngine": "jsc",
       "supportsTablet": true,
-      "bundleIdentifier": "com.WakulukMarcos.kmprofitness"
+      "bundleIdentifier": "com.WakulukMarcos.kmprofitness",
+      "newArchEnabled": true
     },
     "infoPlist": {
       "NSLocationWhenInUseUsageDescription": "This app uses your location to show nearby locations.",
-      "NSPhotoLibraryUsageDescription": "This app needs access to your photo library."
+      "NSPhotoLibraryUsageDescription": "This app needs access to your photo library.",
+      "UIViewControllerBasedStatusBarAppearance": true,
+      "UIStatusBarHidden": true
     },
     "android": {
       "package": "com.WakulukMarcos.kmprofitness",
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "newArchEnabled": true
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
@@ -36,6 +40,10 @@
       "eas": {
         "projectId": "9bc04a7c-95ee-4e3c-b0b5-25652566bc8e"
       }
+    },
+    "androidStatusBar": {
+      "backgroundColor": "#0061a7",
+      "translucent": true
     }
   }
 }

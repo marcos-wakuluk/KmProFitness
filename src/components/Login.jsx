@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { View, StyleSheet, TouchableOpacity, Button, Image, Text } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Image, Text } from "react-native";
 import { Input } from "react-native-elements";
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";

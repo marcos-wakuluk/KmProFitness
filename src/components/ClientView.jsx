@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   background: {
     position: "absolute",
-    backgroundColor: "#069af1",
+    backgroundColor: "#0061a7",
     top: 0,
     bottom: 0,
     left: 0,
@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    paddingBottom: "5%",
   },
   welcomeText: {
     fontSize: 40,

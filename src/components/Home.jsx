@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import React from "react";
+import { SafeAreaView, StyleSheet } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import AdminView from "./AdminView";
 import ClientView from "./ClientView";
@@ -11,28 +11,13 @@ const Home = ({ navigation }) => {
 
   const isAdmin = user.isAdmin === true;
   const completedData = user.newUser;
-  // const completedData = true
-  const [monthlyCheckup, setMonthlyCheckup] = useState(false);
-
-  const currentDate = new Date();
-  const lastUpdateDate = new Date();
-
-  const monthsDiff = (currentDate.getFullYear() - lastUpdateDate.getFullYear()) * 12 + (currentDate.getMonth() - lastUpdateDate.getMonth());
-
-  // Verifica si han pasado un mes o más
-  // if (monthsDiff >= 1) {
-  //   setMonthlyCheckup(true);
-  // } else {
-  //   setMonthlyCheckup(false);
-  // }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "bottom", "left", "right"]}>
       {isAdmin && <AdminView navigation={navigation} />}
-      {/* <CompletedData user={user} /> */}
       {completedData && <CompletedData user={user} />}
       {!completedData && !isAdmin && <ClientView navigation={navigation} user={user} />}
-    </View>
+    </SafeAreaView>
   );
 };
 
