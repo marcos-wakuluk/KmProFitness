@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet, Alert, Platform, Image, TextInput } from "react-native";
+import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet, Alert, Platform, Image, TextInput, TouchableOpacity } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
 import { WebView } from "react-native-webview";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const DietPlanList = ({ navigation }) => {
   const [pdfFiles, setPdfFiles] = useState([]);
@@ -12,7 +13,7 @@ const DietPlanList = ({ navigation }) => {
 
   useEffect(() => {
     fetchPdfFiles();
-  }, [pdfFiles]);
+  }, []);
 
   const fetchPdfFiles = async () => {
     try {
@@ -31,7 +32,7 @@ const DietPlanList = ({ navigation }) => {
   const renderPdfItem = ({ item }) => (
     <View style={styles.pdfItem}>
       <Text>{item.name}</Text>
-      <Button title="Ver PDF" onPress={() => navigation.navigate("PdfViewer", { pdfUrl: item.url })} />
+      <Button title="Ver PDF" onPress={() => setSelectedPdf(item.mealPdfUrl)} />
       <Button title="Asignar a Cliente" onPress={() => navigation.navigate("AssignDietView", { dietId: item._id })} />
     </View>
   );
@@ -99,19 +100,26 @@ const DietPlanList = ({ navigation }) => {
     <>
       <View style={styles.background}></View>
       <Image source={require("../assets/KM-white.png")} style={styles.image} />
-      <TextInput style={styles.searchInput} placeholder="Buscar por nombre" value={searchText} onChangeText={(text) => setSearchText(text)} />
       {selectedPdf ? (
-        <WebView source={{ uri: selectedPdf }} style={{ flex: 1, marginTop: "5%" }} />
+        <>
+          <TouchableOpacity onPress={() => setSelectedPdf(null)}>
+            <Ionicons name="arrow-back" size={24} />
+          </TouchableOpacity>
+          <WebView source={{ uri: selectedPdf }} style={{ flex: 1, marginTop: "5%" }} />
+        </>
       ) : (
-        <FlatList data={filteredDiet} keyExtractor={(pdf) => pdf._id.toString()} renderItem={renderPdfItem} style={{ marginTop: "5%" }} />
+        <>
+          <TextInput style={styles.searchInput} placeholder="Buscar por nombre" value={searchText} onChangeText={(text) => setSearchText(text)} />
+          <FlatList data={filteredDiet} keyExtractor={(pdf) => pdf._id.toString()} renderItem={renderPdfItem} style={{ marginTop: "5%" }} />
+          <View style={{ marginBottom: "5%" }}>
+            <Button
+              title="Ver PDF de Ejemplo"
+              onPress={() => setSelectedPdf("https://www.renfe.com/content/dam/renfe/es/General/PDF-y-otros/Ejemplo-de-descarga-pdf.pdf")}
+            />
+            <Button title="Subir PDF" onPress={uploadPdf} />
+          </View>
+        </>
       )}
-      <View style={{ marginBottom: "5%" }}>
-        <Button
-          title="Ver PDF de Ejemplo"
-          onPress={() => setSelectedPdf("https://www.renfe.com/content/dam/renfe/es/General/PDF-y-otros/Ejemplo-de-descarga-pdf.pdf")}
-        />
-        <Button title="Subir PDF" onPress={uploadPdf} />
-      </View>
     </>
   );
 };
