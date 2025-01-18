@@ -34,7 +34,16 @@ export default function App() {
         <Stack.Screen options={{ headerTitle: "", headerBackTitle: "", headerLeft: null }} name="AssignDietView" component={AssignDietView} />
         <Stack.Screen options={{ headerTitle: "", headerBackTitle: "", headerLeft: null }} name="AssignWorkoutView" component={AssignWorkoutView} />
         <Stack.Screen options={{ headerTitle: "", headerBackTitle: "", headerLeft: null }} name="WorkoutList" component={WorkoutList} />
-        <Stack.Screen options={{ headerTitle: "", headerBackTitle: "", headerLeft: null }} name="DietPlanScreen" component={DietPlanScreen} />
+        <Stack.Screen
+          options={{ headerTitle: "", headerBackTitle: "", headerLeft: null }}
+          name="DietPlanScreen"
+          component={DietPlanScreen}
+          initialParams={{
+            user: {
+              /* user data */
+            },
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

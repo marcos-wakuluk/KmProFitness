@@ -23,7 +23,7 @@ const ClientView = ({ navigation }) => {
           <TouchableOpacity onPress={() => navigation.navigate("Profile", { userId: user._id })}>
             <Icon name="person" size={30} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("DietPlanScreen")}>
+          <TouchableOpacity onPress={() => navigation.navigate("DietPlanScreen", { user: user })}>
             <Icon name="restaurant" size={30} color="black" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate("Workout")}>

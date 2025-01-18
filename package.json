@@ -45,10 +45,9 @@
     "react-native-table-component": "^1.2.2",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
-    "react-native-webview": "13.12.5",
+    "react-native-webview": "^13.12.5",
     "react-navigation": "^5.0.0",
-    "rimraf": "^6.0.1",
-    "expo-random": "undefined"
+    "rimraf": "^6.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

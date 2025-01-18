@@ -1,44 +1,48 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
-// import Pdf from "react-native-pdf";
+import { View, Text, StyleSheet, Dimensions, ActivityIndicator } from "react-native";
+import { WebView } from "react-native-webview";
+import axios from "axios";
 
-const DietPlanScreen = () => {
-  const [numberOfPages, setNumberOfPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
+const DietPlanScreen = ({ route }) => {
+  const { user } = route.params;
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const source = {
-    uri: "file://" + require("../assets/mesocicloGuía2meses.pdf"),
-    cache: true,
-  };
+  useEffect(() => {
+    const fetchUserMealPlan = async () => {
+      try {
+        const mealPlanId = user.mealPlan;
 
-  const onLoadComplete = (numberOfPages) => {
-    console.log(`Number of pages: ${numberOfPages}`);
-    setNumberOfPages(numberOfPages);
-  };
+        const mealPlanResponse = await axios.get(`http://localhost:3000/mealPlan/${mealPlanId}`);
+        // setPdfUrl(mealPlanResponse.data.pdfUrl);
+        setPdfUrl("https://www.renfe.com/content/dam/renfe/es/General/PDF-y-otros/Ejemplo-de-descarga-pdf.pdf");
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching PDF URL:", error);
+        setLoading(false);
+      }
+    };
 
-  const onPageChanged = (page) => {
-    console.log(`Current page: ${page}`);
-    setCurrentPage(page);
-  };
+    fetchUserMealPlan();
+  }, []);
 
-  const onError = (error) => {
-    console.log(error);
-  };
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <Text>Plan de Alimentación</Text>
-      {/* <Pdf
-        source={source}
-        onLoadComplete={onLoadComplete}
-        onPageChanged={onPageChanged}
-        onError={onError}
-        onPressLink={(uri) => {
-          console.log(`Link pressed: ${uri}`);
-        }}
-        style={styles.pdf}
-      /> */}
-      <Text>{`Página ${currentPage} de ${numberOfPages}`}</Text>
+      <View style={styles.background}></View>
+      <Text style={styles.title}>Plan de Alimentación</Text>
+      {pdfUrl ? (
+        <WebView source={{ uri: pdfUrl }} style={styles.pdf} onLoad={() => console.log("PDF loaded")} onError={(error) => console.log(error)} />
+      ) : (
+        <Text style={styles.errorText}>No se pudo cargar el PDF</Text>
+      )}
     </View>
   );
 };
@@ -50,39 +54,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 25,
   },
+  background: {
+    position: "absolute",
+    backgroundColor: "#0061a7",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: -1,
+  },
+  title: {
+    color: "#fff",
+    fontSize: 20,
+    marginBottom: 10,
+  },
   pdf: {
     flex: 1,
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height - 100, // Ajusta el tamaño según la barra de título
+    height: Dimensions.get("window").height - 100,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "#fff",
+    marginTop: 10,
   },
 });
 
 export default DietPlanScreen;
-
-//   return (
-//     <View style={styles.container}>
-//       <View style={styles.overlay}>
-//         <Image source={require("../assets/KM-white.png")} style={styles.image} />
-//       </View>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: "#0061a7",
-//   },
-//   overlay: {
-//     flex: 1,
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-//   image: {
-//     width: 200,
-//     height: 200,
-//     resizeMode: "contain",
-//   },
-// });
-
-// export default DietPlanScreen;

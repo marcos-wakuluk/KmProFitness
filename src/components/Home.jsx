@@ -9,7 +9,8 @@ const Home = ({ navigation }) => {
   const route = useRoute();
   const { user } = route.params || {};
 
-  const isAdmin = user.isAdmin === true;
+  // const isAdmin = user.isAdmin === true;
+  const isAdmin = true;
   const completedData = user.newUser;
 
   return (
