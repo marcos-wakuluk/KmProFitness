@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet, Alert, Platform, TextInput, Image } from "react-native";
-// import * as DocumentPicker from 'expo-document-picker';
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, Alert, Platform, TextInput, Image, TouchableOpacity } from "react-native";
+import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
+import { WebView } from "react-native-webview";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const WorkoutList = ({ navigation }) => {
   const [pdfFiles, setPdfFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
+  const [selectedPdf, setSelectedPdf] = useState(null);
 
   useEffect(() => {
     fetchPdfFiles();
-  }, [pdfFiles]);
+  }, []);
 
   const fetchPdfFiles = async () => {
     try {
@@ -28,31 +31,33 @@ const WorkoutList = ({ navigation }) => {
 
   const renderPdfItem = ({ item }) => (
     <View style={styles.pdfItem}>
-      <Text>{item.name}</Text>
-      <Button title="Asignar a Cliente" onPress={() => navigation.navigate("AssignWorkoutView", { workoutId: item._id })} />
+      <Text style={{ fontSize: 20 }}>{item.name}</Text>
+      <TouchableOpacity onPress={() => setSelectedPdf(item.url)} style={styles.iconButton}>
+        <Ionicons name="eye" size={24} color="#d1e0f3" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("AssignWorkoutView", { workoutId: item._id })} style={styles.iconButton}>
+        <Ionicons name="person-add" size={24} color="#d1e0f3" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("AssignWorkoutView", { workoutId: item._id })} style={styles.iconButton}>
+        <Ionicons name="trash" size={24} color="#d1e0f3" />
+      </TouchableOpacity>
     </View>
   );
-
-  const assignToClient = (pdfId) => {
-    // Aquí puedes implementar la lógica para asignar el PDF al cliente seleccionado
-    // Puedes abrir un modal para seleccionar el cliente o realizar alguna otra acción
-    console.log(`Asignar PDF ${pdfId} a un cliente`);
-  };
 
   const uploadPdf = async () => {
     try {
       let result = null;
       if (Platform.OS === "ios") {
         result = await DocumentPicker.getDocumentAsync({ type: "application/pdf" });
+        result = result.assets[0];
       } else if (Platform.OS === "android") {
         result = await DocumentPicker.getDocumentAsync({ type: "application/pdf", copyToCacheDirectory: false });
       }
 
       if (result) {
-        const fileUri = result.assets[0].uri;
-        const fileName = result.assets[0].name;
+        const fileUri = result.uri;
+        const fileName = result.name;
         const formData = new FormData();
-
         formData.append("pdf", {
           uri: fileUri,
           name: fileName,
@@ -78,8 +83,12 @@ const WorkoutList = ({ navigation }) => {
         Alert.alert("Error", "No se ha seleccionado ningún archivo PDF");
       }
     } catch (error) {
-      console.log("Error al seleccionar el archivo PDF:", error);
-      Alert.alert("Error", "Ha ocurrido un error al seleccionar el archivo PDF");
+      if (DocumentPicker.isCancel(error)) {
+        console.log("Selección de archivo cancelada");
+      } else {
+        console.log("Error al seleccionar el archivo PDF:", error);
+        Alert.alert("Error", "Ha ocurrido un error al seleccionar el archivo PDF");
+      }
     }
   };
 
@@ -91,7 +100,7 @@ const WorkoutList = ({ navigation }) => {
     );
   }
 
-  const filteredDiet = pdfFiles.filter((workout) => {
+  const filteredWorkout = pdfFiles.filter((workout) => {
     const normalizedSearchText = searchText.toLowerCase();
     const normalizedUserName = workout.name.toLowerCase();
 
@@ -102,14 +111,47 @@ const WorkoutList = ({ navigation }) => {
     <>
       <View style={styles.background}></View>
       <Image source={require("../assets/KM-white.png")} style={styles.image} />
-      <TextInput style={styles.searchInput} placeholder="Buscar por nombre" value={searchText} onChangeText={(text) => setSearchText(text)} />
-      <FlatList data={filteredDiet} keyExtractor={(pdf) => pdf._id.toString()} renderItem={renderPdfItem} />
-      <Button title="Subir PDF" onPress={uploadPdf} />
+      {selectedPdf ? (
+        <>
+          <WebView source={{ uri: selectedPdf }} style={{ flex: 1 }} />
+          <TouchableOpacity onPress={() => setSelectedPdf(null)} style={styles.floatingButton}>
+            <Ionicons name="arrow-back" size={40} color="black" />
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <View style={styles.searchContainer}>
+            <TextInput style={styles.searchInput} placeholder="Buscar..." value={searchText} onChangeText={(text) => setSearchText(text)} />
+            <TouchableOpacity onPress={uploadPdf} style={styles.uploadButton}>
+              <Ionicons name="add" size={24} color="#32CD32" />
+            </TouchableOpacity>
+          </View>
+          <FlatList data={filteredWorkout} renderItem={renderPdfItem} keyExtractor={(item) => item._id} />
+        </>
+      )}
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+  },
+  searchInput: {
+    flex: 1,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    color: "#333333",
+    marginRight: 10,
+  },
+  uploadButton: {
+    padding: 10,
+    borderRadius: 5,
+  },
   background: {
     position: "absolute",
     backgroundColor: "#0061a7",
@@ -128,11 +170,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     top: "40%",
   },
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    padding: 16,
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -145,6 +182,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 20,
+    padding: 10,
+    elevation: 5,
   },
 });
 

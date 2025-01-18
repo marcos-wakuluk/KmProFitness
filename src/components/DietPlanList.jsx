@@ -83,8 +83,12 @@ const DietPlanList = ({ navigation }) => {
         Alert.alert("Error", "No se ha seleccionado ningún archivo PDF");
       }
     } catch (error) {
-      console.log("Error al seleccionar el archivo PDF:", error);
-      Alert.alert("Error", "Ha ocurrido un error al seleccionar el archivo PDF");
+      if (DocumentPicker.isCancel(error)) {
+        console.log("Selección de archivo cancelada");
+      } else {
+        console.log("Error al seleccionar el archivo PDF:", error);
+        Alert.alert("Error", "Ha ocurrido un error al seleccionar el archivo PDF");
+      }
     }
   };
 
