@@ -41,13 +41,14 @@ const DietPlanList = ({ navigation }) => {
       let result = null;
       if (Platform.OS === "ios") {
         result = await DocumentPicker.getDocumentAsync({ type: "application/pdf" });
+        result = result.assets[0];
       } else if (Platform.OS === "android") {
         result = await DocumentPicker.getDocumentAsync({ type: "application/pdf", copyToCacheDirectory: false });
       }
 
       if (result) {
-        const fileUri = result.assets[0].uri;
-        const fileName = result.assets[0].name;
+        const fileUri = result.uri;
+        const fileName = result.name;
         const formData = new FormData();
         formData.append("pdf", {
           uri: fileUri,

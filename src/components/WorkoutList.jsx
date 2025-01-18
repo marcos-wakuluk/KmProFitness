@@ -61,7 +61,7 @@ const WorkoutList = ({ navigation }) => {
         formData.append("name", fileName);
         formData.append("description", "Descripción");
 
-        const response = await fetch("http://localhost:3000/uploadPdfTaining", {
+        const response = await fetch("http://localhost:3000/uploadPdfTraining", {
           method: "POST",
           body: formData,
           headers: {
