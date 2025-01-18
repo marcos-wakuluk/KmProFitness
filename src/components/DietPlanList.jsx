@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, ActivityIndicator, Button, StyleSheet, Alert, Platform, Image, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, Alert, Platform, Image, TextInput, TouchableOpacity } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
 import { WebView } from "react-native-webview";
@@ -31,9 +31,16 @@ const DietPlanList = ({ navigation }) => {
 
   const renderPdfItem = ({ item }) => (
     <View style={styles.pdfItem}>
-      <Text>{item.name}</Text>
-      <Button title="Ver PDF" onPress={() => setSelectedPdf(item.mealPdfUrl)} />
-      <Button title="Asignar a Cliente" onPress={() => navigation.navigate("AssignDietView", { dietId: item._id })} />
+      <Text style={{ fontSize: 20 }}>{item.name}</Text>
+      <TouchableOpacity onPress={() => setSelectedPdf(item.mealPdfUrl)} style={styles.iconButton}>
+        <Ionicons name="eye" size={24} color="#d1e0f3" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("AssignDietView", { dietId: item._id })} style={styles.iconButton}>
+        <Ionicons name="person-add" size={24} color="#d1e0f3" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("AssignDietView", { dietId: item._id })} style={styles.iconButton}>
+        <Ionicons name="trash" size={24} color="#d1e0f3" />
+      </TouchableOpacity>
     </View>
   );
 
@@ -109,15 +116,13 @@ const DietPlanList = ({ navigation }) => {
         </>
       ) : (
         <>
-          <TextInput style={styles.searchInput} placeholder="Buscar por nombre" value={searchText} onChangeText={(text) => setSearchText(text)} />
-          <FlatList data={filteredDiet} keyExtractor={(pdf) => pdf._id.toString()} renderItem={renderPdfItem} style={{ marginTop: "5%" }} />
-          <View style={{ marginBottom: "5%" }}>
-            <Button
-              title="Ver PDF de Ejemplo"
-              onPress={() => setSelectedPdf("https://www.renfe.com/content/dam/renfe/es/General/PDF-y-otros/Ejemplo-de-descarga-pdf.pdf")}
-            />
-            <Button title="Subir PDF" onPress={uploadPdf} />
+          <View style={styles.searchContainer}>
+            <TextInput style={styles.searchInput} placeholder="Buscar..." value={searchText} onChangeText={(text) => setSearchText(text)} />
+            <TouchableOpacity onPress={uploadPdf} style={styles.uploadButton}>
+              <Ionicons name="add" size={24} color="#32CD32" />
+            </TouchableOpacity>
           </View>
+          <FlatList data={filteredDiet} renderItem={renderPdfItem} keyExtractor={(item) => item._id} />
         </>
       )}
     </>
@@ -125,10 +130,22 @@ const DietPlanList = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+  },
   searchInput: {
+    flex: 1,
     padding: 10,
     borderWidth: 1,
     borderColor: "#ccc",
+    borderRadius: 5,
+    color: "#333333",
+    marginRight: 10,
+  },
+  uploadButton: {
+    padding: 10,
     borderRadius: 5,
   },
   background: {
@@ -164,8 +181,7 @@ const styles = StyleSheet.create({
   },
   floatingButton: {
     position: "absolute",
-    top: 10,
-    left: 10,
+    bottom: 20,
     padding: 10,
     elevation: 5,
   },
