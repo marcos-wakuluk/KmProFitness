@@ -102,10 +102,10 @@ const DietPlanList = ({ navigation }) => {
       <Image source={require("../assets/KM-white.png")} style={styles.image} />
       {selectedPdf ? (
         <>
-          <TouchableOpacity onPress={() => setSelectedPdf(null)}>
-            <Ionicons name="arrow-back" size={24} />
+          <WebView source={{ uri: selectedPdf }} style={{ flex: 1 }} />
+          <TouchableOpacity onPress={() => setSelectedPdf(null)} style={styles.floatingButton}>
+            <Ionicons name="arrow-back" size={40} color="black" />
           </TouchableOpacity>
-          <WebView source={{ uri: selectedPdf }} style={{ flex: 1, marginTop: "5%" }} />
         </>
       ) : (
         <>
@@ -161,6 +161,13 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+  },
+  floatingButton: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    padding: 10,
+    elevation: 5,
   },
 });
 
