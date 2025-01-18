@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, StyleSheet, Text, ActivityIndicator, TouchableOpacity, ScrollView } from "react-native";
+import { View, Image, StyleSheet, Text, ActivityIndicator, FlatList } from "react-native";
 import axios from "axios";
 import { calculateAge } from "../utils/functions";
-import { Table, Rows } from "react-native-table-component";
-import { FlatList } from "react-native-gesture-handler";
-import { Button } from "react-native-paper";
 
 const UserDetail = ({ route }) => {
   const { userId } = route.params;
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     fetchUser();
@@ -62,48 +58,53 @@ const UserDetail = ({ route }) => {
     </View>
   );
 
-  const renderItem = ({ item }) => {
-    return (
-      <View style={styles.row}>
-        {Object.entries(item)
-          .filter(([key]) => key !== "_id")
-          .map(([key, value], idx) => (
-            <Text style={styles.cell} key={idx}>
-              {key === "date" ? new Date(value).toLocaleDateString("es-AR", { year: "2-digit", month: "2-digit", day: "2-digit" }) : value}
-            </Text>
-          ))}
-      </View>
-    );
-  };
+  const renderItem = ({ item }) => (
+    <View style={styles.row}>
+      {Object.entries(item)
+        .filter(([key]) => key !== "_id")
+        .map(([key, value], idx) => (
+          <Text style={styles.cell} key={idx}>
+            {key === "date" ? new Date(value).toLocaleDateString("es-AR", { year: "2-digit", month: "2-digit", day: "2-digit" }) : value}
+          </Text>
+        ))}
+    </View>
+  );
+
+  const renderUserInfo = () => (
+    <View style={styles.userDetailContainer}>
+      <Text style={styles.userInfo}>{`Nombre: ${user.name} ${user.lastName}`}</Text>
+      <Text style={styles.userInfo}>{`Edad: ${calculateAge(user.birthday)} años`}</Text>
+      <Text style={styles.userInfo}>{`Email: ${user.email}`}</Text>
+      <Text style={styles.userInfo}>{`Teléfono: ${user.phone}`}</Text>
+      <Text style={styles.userInfo}>{`Altura: ${user.height} cm`}</Text>
+    </View>
+  );
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.background}></View>
       <Image source={require("../assets/KM-white.png")} style={styles.image} />
       {user && (
-        <View style={styles.userDetailContainer}>
-          <Text style={styles.userInfo}>{`Nombre: ${user.name} ${user.lastName}`}</Text>
-          <Text style={styles.userInfo}>{`Edad: ${calculateAge(user.birthday)} años`}</Text>
-          <Text style={styles.userInfo}>{`Email: ${user.email}`}</Text>
-          <Text style={styles.userInfo}>{`Teléfono: ${user.phone}`}</Text>
-          <Text style={styles.userInfo}>{`Altura: ${user.height} cm`}</Text>
-          <FlatList
-            data={user.details}
-            ListHeaderComponent={renderHeader}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
-            contentContainerStyle={styles.tableContainer}
-          />
-        </View>
+        <FlatList
+          data={user.details}
+          ListHeaderComponent={() => (
+            <>
+              {renderUserInfo()}
+              {renderHeader()}
+            </>
+          )}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={styles.tableContainer}
+        />
       )}
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
   },
   background: {
     position: "absolute",
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#000",
     paddingBottom: 5,
-    backgroundColor: "#e0e0e0",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
   },
   headerCell: {
     flex: 1,
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     paddingVertical: 10,
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
   },
   cell: {
     flex: 1,
