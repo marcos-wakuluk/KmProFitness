@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { View, Image, StyleSheet, Text, ActivityIndicator, TouchableOpacity } from 'react-native';
-import axios from 'axios';
-import { calculateAge } from '../utils/functions';
-import { Table, Rows } from 'react-native-table-component';
+import React, { useState, useEffect } from "react";
+import { View, Image, StyleSheet, Text, ActivityIndicator, TouchableOpacity, ScrollView } from "react-native";
+import axios from "axios";
+import { calculateAge } from "../utils/functions";
+import { Table, Rows } from "react-native-table-component";
+import { FlatList } from "react-native-gesture-handler";
+import { Button } from "react-native-paper";
 
 const UserDetail = ({ route }) => {
   const { userId } = route.params;
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedNumber, setSelectedNumber] = useState(null);
-  const [showTable, setShowTable] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     fetchUser();
@@ -23,14 +24,9 @@ const UserDetail = ({ route }) => {
       setUser(userData.user);
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.error("Error fetching user:", error);
       setLoading(false);
     }
-  };
-
-  const handleButtonClick = (number) => {
-    setSelectedNumber(number);
-    setShowTable(true);
   };
 
   if (loading) {
@@ -41,49 +37,77 @@ const UserDetail = ({ route }) => {
     );
   }
 
+  const keyTranslations = {
+    biceps: "Bíceps",
+    waist: "Cintura",
+    chest: "Pecho",
+    thigh: "Muslo",
+    dietPlan: "Plan de alimentación",
+    trainingPlan: "Plan de entrenamiento",
+    weight: "Peso",
+    date: "Fecha",
+  };
+
+  const renderHeader = () => (
+    <View style={styles.headerRow}>
+      {user.details &&
+        user.details.length > 0 &&
+        Object.keys(user.details[0])
+          .filter((key) => key !== "_id")
+          .map((key, index) => (
+            <Text style={styles.headerCell} key={index}>
+              {keyTranslations[key] || key}
+            </Text>
+          ))}
+    </View>
+  );
+
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.row}>
+        {Object.entries(item)
+          .filter(([key]) => key !== "_id")
+          .map(([key, value], idx) => (
+            <Text style={styles.cell} key={idx}>
+              {key === "date" ? new Date(value).toLocaleDateString("es-AR", { year: "2-digit", month: "2-digit", day: "2-digit" }) : value}
+            </Text>
+          ))}
+      </View>
+    );
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.background}></View>
-      <Image
-        source={require('../assets/KM-white.png')}
-        style={styles.image}
-      />
+      <Image source={require("../assets/KM-white.png")} style={styles.image} />
       {user && (
         <View style={styles.userDetailContainer}>
-          <Text style={styles.userInfo}>{`Nombre: ${user.name}`}</Text>
+          <Text style={styles.userInfo}>{`Nombre: ${user.name} ${user.lastName}`}</Text>
           <Text style={styles.userInfo}>{`Edad: ${calculateAge(user.birthday)} años`}</Text>
           <Text style={styles.userInfo}>{`Email: ${user.email}`}</Text>
-          <Text style={styles.userInfo}>{`Telefono: ${user.phone}`}</Text>
+          <Text style={styles.userInfo}>{`Teléfono: ${user.phone}`}</Text>
           <Text style={styles.userInfo}>{`Altura: ${user.height} cm`}</Text>
-
-          <View style={styles.buttonContainer}>
-            {[1, 2, 3].map(number => (
-              <TouchableOpacity key={number} style={styles.button} onPress={() => handleButtonClick(number)}>
-                <Text style={styles.buttonText}>{number}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          {showTable && selectedNumber >= 1 && selectedNumber <= 10 && (
-            <View style={styles.tableContainer}>
-              <Text style={styles.tableHeaderText}>Fecha {selectedNumber}:</Text>
-              <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
-                <Rows data={[['peso', user.weight], ['Biceps', user.details[0].biceps], ['Cintura', user.details[0].waist], ['Pecho', user.details[0].chest], ['Muslo', user.details[0].thigh], ['plan de alimentacion', user.details[0].thigh], ['plan de entrenamiento', user.details[0].thigh]]} textStyle={styles.tableText} />
-              </Table>
-            </View>
-          )}
+          <FlatList
+            data={user.details}
+            ListHeaderComponent={renderHeader}
+            renderItem={renderItem}
+            keyExtractor={(item, index) => index.toString()}
+            contentContainerStyle={styles.tableContainer}
+          />
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f5f5f5",
   },
   background: {
-    position: 'absolute',
-    backgroundColor: '#0061a7',
+    position: "absolute",
+    backgroundColor: "#0061a7",
     top: 0,
     bottom: 0,
     left: 0,
@@ -91,24 +115,25 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   image: {
-    position: 'absolute',
-    resizeMode: 'contain',
+    position: "absolute",
+    resizeMode: "contain",
     zIndex: 0,
     height: 200,
     width: 200,
-    alignSelf: 'center',
-    top: '40%',
+    alignSelf: "center",
+    top: "10%",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   userDetailContainer: {
-    marginTop: 20,
+    marginTop: 250,
     padding: 20,
     borderRadius: 10,
-    shadowColor: '#000',
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -120,39 +145,38 @@ const styles = StyleSheet.create({
   userInfo: {
     marginBottom: 10,
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    color: "#333",
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
+  headerRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+    paddingBottom: 5,
+    backgroundColor: "#e0e0e0",
   },
-  button: {
-    backgroundColor: '#009688',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: 'white',
+  headerCell: {
+    flex: 1,
+    fontWeight: "bold",
+    textAlign: "center",
     fontSize: 18,
-    fontWeight: 'bold',
+    padding: 5,
+  },
+  row: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    paddingVertical: 10,
+    backgroundColor: "#fff",
+  },
+  cell: {
+    flex: 1,
+    textAlign: "center",
+    fontSize: 18,
+    padding: 5,
   },
   tableContainer: {
     marginTop: 20,
-  },
-  tableHeaderText: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  tableHeader: {
-    backgroundColor: '#f1f8ff',
-  },
-  tableText: {
-    textAlign: 'center',
-    paddingVertical: 10,
   },
 });
 
