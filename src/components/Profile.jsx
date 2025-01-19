@@ -41,8 +41,8 @@ const Profile = () => {
     setName(userData.name || "");
     setPhone(userData.phone || "");
     setAge(calculateAge(userData.birthday || ""));
-    setWeight(userData.weight || "");
-    setHeight(userData.details[0].height || "");
+    setWeight(userData.details[0].weight || "");
+    setHeight(userData.height || "");
   };
 
   const handleSave = async () => {
@@ -101,7 +101,6 @@ const Profile = () => {
       <View style={styles.background}></View>
       <Image source={require("../assets/KM-white.png")} style={styles.image} />
       <Card style={styles.card}>
-        <Card.Title title="Perfil" />
         <Card.Content>
           <Image source={profileImage} style={styles.profileImage} />
           <Button mode="contained" onPress={handleImagePick} disabled={!editMode} style={styles.button}>
