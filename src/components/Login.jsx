@@ -3,7 +3,6 @@ import axios from "axios";
 import { View, StyleSheet, TouchableOpacity, Image, Text } from "react-native";
 import { Input } from "react-native-elements";
 import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome } from "@expo/vector-icons";
 WebBrowser.maybeCompleteAuthSession();
@@ -13,26 +12,6 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [userInfo, setUserInfo] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId: process.env.CLIENT_ID_IOS,
-    webClientId: process.env.CLIENT_ID_WEB,
-    androidClientId: process.env.CLIENT_ID_ANDROID,
-  });
-
-  useEffect(() => {
-    handleSignInWithGoogle();
-  }, [response]);
-
-  async function handleSignInWithGoogle() {
-    const user = await getLocalUser();
-    if (!user) {
-      if (response?.type === "success") {
-        getUserInfo(response.authentication.accessToken);
-      }
-    } else {
-      setUserInfo(user);
-    }
-  }
 
   useEffect(() => {
     checkIfUserIsLoggedIn();
