@@ -1,23 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import AdminView from "./AdminView";
 import ClientView from "./ClientView";
 import CompletedData from "../screens/CompleteData";
 
-const Home = ({ navigation }) => {
+const Home = () => {
   const route = useRoute();
+  const navigation = useNavigation();
   const { user } = route.params || {};
 
-  // const isAdmin = user.isAdmin === true;
-  const isAdmin = true;
-  const completedData = user.newUser;
+  useEffect(() => {
+    if (!user) {
+      navigation.navigate("Login");
+    }
+  }, [user, navigation]);
+
+  const isAdmin = !!user?.isAdmin;
+  const completedData = !!user?.newUser;
 
   return (
     <SafeAreaView style={styles.container} edges={["top", "bottom", "left", "right"]}>
-      {isAdmin && <AdminView navigation={navigation} />}
-      {completedData && <CompletedData user={user} />}
-      {!completedData && !isAdmin && <ClientView navigation={navigation} user={user} />}
+      {isAdmin ? (
+        <AdminView navigation={navigation} />
+      ) : completedData ? (
+        <CompletedData user={user} />
+      ) : (
+        <ClientView navigation={navigation} user={user} />
+      )}
     </SafeAreaView>
   );
 };

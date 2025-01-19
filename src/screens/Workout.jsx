@@ -1,23 +1,61 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Dimensions, ActivityIndicator } from "react-native";
 import { WebView } from "react-native-webview";
+import axios from "axios";
 
-const Workout = () => {
-  const source = "https://www.renfe.com/content/dam/renfe/es/General/PDF-y-otros/Ejemplo-de-descarga-pdf.pdf";
+const Workout = ({ route }) => {
+  const { trainingPlan } = route.params;
+  const [workoutPlanUrl, setWorkoutPlanUrl] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchWorkoutPlan = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/workoutPlans/${trainingPlan}`);
+
+        setWorkoutPlanUrl(response.data.trainingPdfUrl);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching workout plan:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchWorkoutPlan();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
-    <>
+    <View style={styles.container}>
       <View style={styles.background}></View>
-      <Image source={require("../assets/KM-white.png")} style={styles.image} />
-      <View style={styles.container}>
-        <Text style={styles.title}>Plan de Entrenamiento</Text>
-        <WebView source={{ uri: source }} style={styles.pdf} onLoad={() => console.log("PDF loaded")} onError={(error) => console.log(error)} />
-      </View>
-    </>
+      {workoutPlanUrl ? (
+        <WebView
+          source={{ uri: workoutPlanUrl }}
+          style={styles.pdf}
+          onLoad={() => console.log("PDF loaded")}
+          onError={(error) => console.log(error)}
+        />
+      ) : (
+        <Text style={styles.errorText}>No se pudo cargar el PDF</Text>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "flex-start",
+    alignItems: "center",
+    marginTop: 25,
+  },
   background: {
     position: "absolute",
     backgroundColor: "#0061a7",
@@ -26,21 +64,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: -1,
-  },
-  image: {
-    position: "absolute",
-    resizeMode: "contain",
-    zIndex: 0,
-    height: 200,
-    width: 200,
-    alignSelf: "center",
-    top: "40%",
-  },
-  container: {
-    flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    marginTop: 25,
   },
   title: {
     color: "#fff",
@@ -51,6 +74,15 @@ const styles = StyleSheet.create({
     flex: 1,
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height - 100,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "#fff",
+    marginTop: 10,
   },
 });
 

@@ -1,15 +1,15 @@
 import React from "react";
 import { View, TouchableOpacity, StyleSheet, Text, Image } from "react-native";
+import { useRoute } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Card from "./Card";
-import { motivationalQuotes } from "../constants";
 import Contact from "./Contact";
-import { useRoute } from "@react-navigation/native";
+import { motivationalQuotes } from "../constants";
 
 const ClientView = ({ navigation }) => {
   const route = useRoute();
   const { user } = route.params;
-  const username = user.name;
+  const username = user?.name || "Usuario";
 
   return (
     <View style={styles.container}>
@@ -23,10 +23,10 @@ const ClientView = ({ navigation }) => {
           <TouchableOpacity onPress={() => navigation.navigate("Profile", { userId: user._id })}>
             <Icon name="person" size={30} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("DietPlanScreen", { user: user })}>
+          <TouchableOpacity onPress={() => navigation.navigate("DietPlanScreen", { mealPlan: user.mealPlan })}>
             <Icon name="restaurant" size={30} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Workout")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Workout", { trainingPlan: user.trainingPlan })}>
             <Icon name="barbell-sharp" size={40} color="black" />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate("Payment")}>

@@ -43,10 +43,22 @@ const Login = ({ navigation }) => {
       const storedUser = await AsyncStorage.getItem("@user");
       if (storedUser) {
         const user = JSON.parse(storedUser);
-        navigation.navigate("Home", { user });
+        const updatedUser = await fetchUser(user.id);
+        await AsyncStorage.setItem("@user", JSON.stringify(updatedUser));
+        navigation.navigate("Home", { user: updatedUser });
       }
     } catch (error) {
       console.error("Error verificando la sesión:", error);
+    }
+  };
+
+  const fetchUser = async (userId) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/users/${userId}`);
+      return response.data.data.user;
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      return null;
     }
   };
 

@@ -4,26 +4,24 @@ import { WebView } from "react-native-webview";
 import axios from "axios";
 
 const DietPlanScreen = ({ route }) => {
-  const { user } = route.params;
-  const [pdfUrl, setPdfUrl] = useState(null);
+  const { mealPlan } = route.params;
+  const [mealPlanUrl, setMealPlanUrl] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserMealPlan = async () => {
+    const fetchMealPlan = async () => {
       try {
-        const mealPlanId = user.mealPlan;
+        const response = await axios.get(`http://localhost:3000/mealPlans/${mealPlan}`);
 
-        const mealPlanResponse = await axios.get(`http://localhost:3000/mealPlan/${mealPlanId}`);
-        // setPdfUrl(mealPlanResponse.data.pdfUrl);
-        setPdfUrl("https://www.renfe.com/content/dam/renfe/es/General/PDF-y-otros/Ejemplo-de-descarga-pdf.pdf");
+        setMealPlanUrl(response.data.mealPdfUrl);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching PDF URL:", error);
+        console.error("Error fetching meal plan:", error);
         setLoading(false);
       }
     };
 
-    fetchUserMealPlan();
+    fetchMealPlan();
   }, []);
 
   if (loading) {
@@ -37,9 +35,13 @@ const DietPlanScreen = ({ route }) => {
   return (
     <View style={styles.container}>
       <View style={styles.background}></View>
-      <Text style={styles.title}>Plan de Alimentación</Text>
-      {pdfUrl ? (
-        <WebView source={{ uri: pdfUrl }} style={styles.pdf} onLoad={() => console.log("PDF loaded")} onError={(error) => console.log(error)} />
+      {mealPlanUrl ? (
+        <WebView
+          source={{ uri: mealPlanUrl }}
+          style={styles.pdf}
+          onLoad={() => console.log("PDF loaded")}
+          onError={(error) => console.log(error)}
+        />
       ) : (
         <Text style={styles.errorText}>No se pudo cargar el PDF</Text>
       )}
