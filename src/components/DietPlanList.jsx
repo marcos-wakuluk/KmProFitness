@@ -112,12 +112,7 @@ const DietPlanList = ({ navigation }) => {
       <View style={styles.background}></View>
       <Image source={require("../assets/KM-white.png")} style={styles.image} />
       {selectedPdf ? (
-        <>
-          <WebView source={{ uri: selectedPdf }} style={{ flex: 1 }} />
-          <TouchableOpacity onPress={() => setSelectedPdf(null)} style={styles.floatingButton}>
-            <Ionicons name="arrow-back" size={40} color="black" />
-          </TouchableOpacity>
-        </>
+        <WebView source={{ uri: selectedPdf }} style={{ flex: 1 }} />
       ) : (
         <>
           <View style={styles.searchContainer}>

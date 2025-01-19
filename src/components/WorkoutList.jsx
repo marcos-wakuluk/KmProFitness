@@ -32,7 +32,7 @@ const WorkoutList = ({ navigation }) => {
   const renderPdfItem = ({ item }) => (
     <View style={styles.pdfItem}>
       <Text style={{ fontSize: 20 }}>{item.name}</Text>
-      <TouchableOpacity onPress={() => setSelectedPdf(item.url)} style={styles.iconButton}>
+      <TouchableOpacity onPress={() => setSelectedPdf(item.trainingPdfUrl)} style={styles.iconButton}>
         <Ionicons name="eye" size={24} color="#d1e0f3" />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("AssignWorkoutView", { workoutId: item._id })} style={styles.iconButton}>
@@ -76,6 +76,7 @@ const WorkoutList = ({ navigation }) => {
 
         if (response.ok) {
           Alert.alert("Éxito", "El PDF se ha subido correctamente");
+          fetchPdfFiles();
         } else {
           Alert.alert("Error", "Ha ocurrido un error al subir el archivo PDF");
         }
@@ -112,12 +113,7 @@ const WorkoutList = ({ navigation }) => {
       <View style={styles.background}></View>
       <Image source={require("../assets/KM-white.png")} style={styles.image} />
       {selectedPdf ? (
-        <>
-          <WebView source={{ uri: selectedPdf }} style={{ flex: 1 }} />
-          <TouchableOpacity onPress={() => setSelectedPdf(null)} style={styles.floatingButton}>
-            <Ionicons name="arrow-back" size={40} color="black" />
-          </TouchableOpacity>
-        </>
+        <WebView source={{ uri: selectedPdf }} style={{ flex: 1 }} />
       ) : (
         <>
           <View style={styles.searchContainer}>
