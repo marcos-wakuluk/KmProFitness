@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Dimensions, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, Dimensions, ActivityIndicator, Animated } from "react-native";
 import { WebView } from "react-native-webview";
 import axios from "axios";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const DietPlanScreen = ({ route }) => {
   const { mealPlan } = route.params;
   const [mealPlanUrl, setMealPlanUrl] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [pdfLoading, setPdfLoading] = useState(true);
+  const [pulseAnim] = useState(new Animated.Value(1));
 
   useEffect(() => {
     const fetchMealPlan = async () => {
@@ -24,6 +27,25 @@ const DietPlanScreen = ({ route }) => {
     fetchMealPlan();
   }, []);
 
+  useEffect(() => {
+    if (pdfLoading) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.5,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    }
+  }, [pdfLoading, pulseAnim]);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -36,12 +58,26 @@ const DietPlanScreen = ({ route }) => {
     <View style={styles.container}>
       <View style={styles.background}></View>
       {mealPlanUrl ? (
-        <WebView
-          source={{ uri: mealPlanUrl }}
-          style={styles.pdf}
-          onLoad={() => console.log("PDF loaded")}
-          onError={(error) => console.log(error)}
-        />
+        <>
+          {pdfLoading && (
+            <View style={styles.overlay}>
+              <View style={styles.pdfLoadingContainer}>
+                <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
+                  <Ionicons name="restaurant" size={50} color="#ffffff" />
+                </Animated.View>
+              </View>
+            </View>
+          )}
+          <WebView
+            source={{ uri: mealPlanUrl }}
+            style={styles.pdf}
+            onLoad={() => setPdfLoading(false)}
+            onError={(error) => {
+              console.log(error);
+              setPdfLoading(false);
+            }}
+          />
+        </>
       ) : (
         <Text style={styles.errorText}>No se pudo cargar el PDF</Text>
       )}
@@ -79,6 +115,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  pdfLoadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
   },
   errorText: {
     color: "#fff",

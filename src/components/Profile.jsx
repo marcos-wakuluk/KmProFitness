@@ -28,7 +28,6 @@ const Profile = () => {
     try {
       const response = await axios.get(`http://localhost:3000/users/${userId}`);
       const userData = response.data.data;
-      console.log("🚀 ~ fetchUser ~ userData:", userData);
       initializeUserData(userData.user);
       setLoading(false);
     } catch (error) {
@@ -107,10 +106,38 @@ const Profile = () => {
           Elegir imagen de perfil
         </Button>
         <TextInput label="Nombre" value={name} onChangeText={setName} editable={editMode} style={styles.input} />
-        <TextInput label="Telefono" value={phone.toString()} onChangeText={setPhone} keyboardType="phone-pad" editable={editMode} style={styles.input} />
-        <TextInput label="Edad" value={age.toString()} onChangeText={setAge} keyboardType="numeric" editable={editMode} style={styles.input} />
-        <TextInput label="Altura" value={weight.toString()} onChangeText={setWeight} keyboardType="numeric" editable={editMode} style={styles.input} />
-        <TextInput label="Peso" value={height.toString()} onChangeText={setHeight} keyboardType="numeric" editable={editMode} style={styles.input} />
+        <TextInput
+          label="Telefono"
+          value={phone.toString()}
+          onChangeText={setPhone}
+          keyboardType="phone-pad"
+          editable={editMode}
+          style={styles.input}
+        />
+        <TextInput
+          label="Edad"
+          value={age.toString()}
+          onChangeText={setAge}
+          keyboardType="numeric"
+          editable={editMode}
+          style={styles.input}
+        />
+        <TextInput
+          label="Altura"
+          value={weight.toString()}
+          onChangeText={setWeight}
+          keyboardType="numeric"
+          editable={editMode}
+          style={styles.input}
+        />
+        <TextInput
+          label="Peso"
+          value={height.toString()}
+          onChangeText={setHeight}
+          keyboardType="numeric"
+          editable={editMode}
+          style={styles.input}
+        />
         <Button onPress={editMode ? handleSave : handleEdit} style={styles.button}>
           {editMode ? "Guardar" : "Editar"}
         </Button>
