@@ -108,11 +108,22 @@ const ClientView = ({ navigation }) => {
             return (
               <>
                 <TouchableOpacity onPress={handleStep1Press}>
-                  <Card title={"Paso 1"} />
+                  <View style={styles.NoBlockedCard}>
+                    <Text style={styles.cardTitle}>Paso 1</Text>
+                  </View>
                 </TouchableOpacity>
-                <Card title={"Paso 2"} />
-                <Card title={"Paso 3"} />
-                <Card title={"Paso 4"} />
+                <View style={styles.blockedCard}>
+                  <Text style={styles.cardTitle}>Paso 2</Text>
+                  <Icon name="lock-closed" size={40} />
+                </View>
+                <View style={styles.blockedCard}>
+                  <Text style={styles.cardTitle}>Paso 3</Text>
+                  <Icon name="lock-closed" size={40} />
+                </View>
+                <View style={styles.blockedCard}>
+                  <Text style={styles.cardTitle}>Paso 4</Text>
+                  <Icon name="lock-closed" size={40} />
+                </View>
                 <TouchableOpacity onPress={handleBackPress}>
                   <Text style={styles.backButton}>Volver</Text>
                 </TouchableOpacity>
@@ -147,6 +158,59 @@ const ClientView = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  blockedCard: {
+    backgroundColor: "#d8f0ff",
+    borderRadius: 8,
+    borderColor: "#53c0ff",
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    padding: 10,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    margin: 10,
+    filter: "brightness(60%)",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+    height: 60,
+  },
+  NoBlockedCard: {
+    height: 60,
+    backgroundColor: "#d8f0ff",
+    borderRadius: 8,
+    borderColor: "#53c0ff",
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    padding: 10,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    margin: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  cardTitle: {
+    position: "absolute",
+    top: 10,
+    left: "45%",
+    fontSize: 24,
+    color: "black",
+    transform: [{ translateY: 10 }],
+  },
+  lockIcon: {
+    fontSize: 50,
+    color: "white",
+  },
   container: {
     flex: 1,
     position: "relative",
@@ -239,9 +303,8 @@ const styles = StyleSheet.create({
   },
   motivationalCardContainer: {
     position: "absolute",
-    bottom: 50, // Adjust as needed to be above the contact section
+    bottom: 80,
     width: "100%",
-    paddingHorizontal: 20,
   },
   reminderCardContainer: {
     position: "absolute",
