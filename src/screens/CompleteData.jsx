@@ -2,6 +2,7 @@ import React, { memo, useState } from "react";
 import { StyleSheet, View, ScrollView, Alert, TouchableOpacity, Text } from "react-native";
 import { TextInput } from "react-native-paper";
 import axios from "axios";
+import PropTypes from "prop-types";
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -51,7 +52,7 @@ const Profile = memo(({ user }) => {
   };
 
   const handlePositiveNumberInput = (value, setValue) => {
-    const numericValue = value.replace(/[^0-9]/g, "");
+    const numericValue = value.replace(/\D/g, "");
     setValue(numericValue);
   };
 
@@ -70,7 +71,13 @@ const Profile = memo(({ user }) => {
       <View style={styles.container}>
         <TextInput label="Nombre" value={name} onChangeText={setName} style={styles.input} />
         <TextInput label="Apellido" value={lastName} onChangeText={setLastName} style={styles.input} />
-        <TextInput label="Fecha de nacimiento" value={birthDateString} onChangeText={handleTextInputChange} onFocus={showDatePicker} style={styles.input} />
+        <TextInput
+          label="Fecha de nacimiento"
+          value={birthDateString}
+          onChangeText={handleTextInputChange}
+          onFocus={showDatePicker}
+          style={styles.input}
+        />
         {showPicker && <DateTimePicker value={birthDate} mode="date" display="default" onChange={handleDateChange} />}
         <TextInput label="Teléfono" value={phone} onChangeText={setPhone} style={styles.input} />
         <TextInput
@@ -140,5 +147,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+Profile.propTypes = {
+  user: PropTypes.shape({
+    details: PropTypes.arrayOf(
+      PropTypes.shape({
+        biceps: PropTypes.number,
+        waist: PropTypes.number,
+        thigh: PropTypes.number,
+        chest: PropTypes.number,
+        weight: PropTypes.number,
+      })
+    ),
+    _id: PropTypes.string.isRequired,
+  }).isRequired,
+};
 
 export default Profile;
