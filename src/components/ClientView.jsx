@@ -97,7 +97,10 @@ const ClientView = ({ navigation }) => {
                 <TouchableOpacity onPress={() => navigation.navigate("Workout", { trainingPlan: user.trainingPlan })}>
                   <Card title={"Plan de entrenamiento básico"} />
                 </TouchableOpacity>
-                <Card title={"Checklist semanal descargable"} />
+                <TouchableOpacity onPress={() => navigation.navigate("Checklist")}>
+                  <Card title={"Checklist semanal"} />
+                </TouchableOpacity>
+                {/* <Card title={"Checklist semanal descargable"} /> */}
                 <Card title={"Ejercicio de mentalidad y reflexión"} />
                 <TouchableOpacity onPress={handleBackPress}>
                   <Text style={styles.backButton}>Volver</Text>
