@@ -16,6 +16,7 @@ const ClientView = ({ navigation }) => {
   const [showPPRSteps, setShowPPRSteps] = useState(false);
   const [showStep1Details, setShowStep1Details] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const [showReminderCard, setShowReminderCard] = useState(true);
 
   const handlePPRPress = () => {
     setShowPPRSteps(true);
@@ -36,6 +37,10 @@ const ClientView = ({ navigation }) => {
 
   const handleCloseVideo = () => {
     setShowVideo(false);
+  };
+
+  const handleCloseReminderCard = () => {
+    setShowReminderCard(false);
   };
 
   return (
@@ -67,7 +72,14 @@ const ClientView = ({ navigation }) => {
               <>
                 <Text style={styles.progressText}>Tu progreso</Text>
                 <ProgressBar progress={0.5} style={styles.progressBar} />
-                <Card title={"Recorda ir a entrenar hoy"} />
+                {showReminderCard && (
+                  <View style={styles.reminderCardContainer}>
+                    <Card title={"Recorda ir a entrenar hoy"} />
+                    <TouchableOpacity style={styles.closeButtonReminder} onPress={handleCloseReminderCard}>
+                      <Text style={styles.closeButtonTextReminder}>X</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
                 <TouchableOpacity onPress={handlePPRPress}>
                   <Card title={"Tu Ruta de Transformación"} />
                 </TouchableOpacity>
@@ -227,8 +239,39 @@ const styles = StyleSheet.create({
   },
   motivationalCardContainer: {
     position: "absolute",
-    bottom: 80,
+    bottom: 50, // Adjust as needed to be above the contact section
     width: "100%",
+    paddingHorizontal: 20,
+  },
+  reminderCardContainer: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    right: 10,
+    borderRadius: 10,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+    zIndex: 1000,
+  },
+  closeButtonReminder: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    backgroundColor: "black",
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  closeButtonTextReminder: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
