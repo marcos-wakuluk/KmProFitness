@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
+import axios from "axios";
 
 const UserList = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     fetchUsers();
@@ -13,17 +13,17 @@ const UserList = ({ navigation }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/users', {
+      const response = await axios.get("http://localhost:3001/users", {
         params: {
-          field: 'name'
-        }
+          field: "name",
+        },
       });
       const { data } = response.data;
-      const users = data.users
+      const users = data.users;
       setUsers(users);
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error("Error fetching users:", error);
       setLoading(false);
     }
   };
@@ -42,7 +42,7 @@ const UserList = ({ navigation }) => {
 
   const renderUserItem = ({ item }) => {
     const handleUserPress = () => {
-      navigation.navigate('UserDetail', { userId: item._id });
+      navigation.navigate("UserDetail", { userId: item._id });
     };
 
     return (
@@ -54,7 +54,7 @@ const UserList = ({ navigation }) => {
     );
   };
 
-  const filteredUsers = users.filter(user => {
+  const filteredUsers = users.filter((user) => {
     const normalizedSearchText = searchText.toLowerCase();
     const normalizedUserName = user.name.toLowerCase();
 
@@ -64,10 +64,7 @@ const UserList = ({ navigation }) => {
   return (
     <>
       <View style={styles.background}></View>
-      <Image
-        source={require('../assets/KM-white.png')}
-        style={styles.image}
-      />
+      <Image source={require("../assets/KM-white.png")} style={styles.image} />
       <TextInput
         style={styles.searchInput}
         placeholder="Buscar usuario"
@@ -86,8 +83,8 @@ const UserList = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   background: {
-    position: 'absolute',
-    backgroundColor: '#0061a7',
+    position: "absolute",
+    backgroundColor: "#0061a7",
     top: 0,
     bottom: 0,
     left: 0,
@@ -95,32 +92,32 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   image: {
-    position: 'absolute',
-    resizeMode: 'contain',
+    position: "absolute",
+    resizeMode: "contain",
     zIndex: 0,
     height: 200,
     width: 200,
-    alignSelf: 'center',
-    top: '40%',
+    alignSelf: "center",
+    top: "40%",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   userItem: {
     paddingVertical: 20,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
   },
   userName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   searchInput: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,

@@ -31,7 +31,7 @@ const Profile = memo(({ user }) => {
     };
 
     try {
-      const response = await axios.put(`http://localhost:3000/usersDetails/${user._id}`, {
+      const response = await axios.put(`http://localhost:3001/usersDetails/${user._id}`, {
         updateData: updateUser,
         name,
         lastName,

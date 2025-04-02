@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, ActivityIndicator, StyleSheet, Alert, Platform, TextInput, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  StyleSheet,
+  Alert,
+  Platform,
+  TextInput,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
 import { WebView } from "react-native-webview";
@@ -35,10 +46,16 @@ const WorkoutList = ({ navigation }) => {
       <TouchableOpacity onPress={() => setSelectedPdf(item.trainingPdfUrl)} style={styles.iconButton}>
         <Ionicons name="eye" size={24} color="#d1e0f3" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("AssignWorkoutView", { workoutId: item._id })} style={styles.iconButton}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("AssignWorkoutView", { workoutId: item._id })}
+        style={styles.iconButton}
+      >
         <Ionicons name="person-add" size={24} color="#d1e0f3" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("AssignWorkoutView", { workoutId: item._id })} style={styles.iconButton}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("AssignWorkoutView", { workoutId: item._id })}
+        style={styles.iconButton}
+      >
         <Ionicons name="trash" size={24} color="#d1e0f3" />
       </TouchableOpacity>
     </View>
@@ -117,7 +134,12 @@ const WorkoutList = ({ navigation }) => {
       ) : (
         <>
           <View style={styles.searchContainer}>
-            <TextInput style={styles.searchInput} placeholder="Buscar..." value={searchText} onChangeText={(text) => setSearchText(text)} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Buscar..."
+              value={searchText}
+              onChangeText={(text) => setSearchText(text)}
+            />
             <TouchableOpacity onPress={uploadPdf} style={styles.uploadButton}>
               <Ionicons name="add" size={24} color="#32CD32" />
             </TouchableOpacity>

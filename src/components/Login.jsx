@@ -33,7 +33,7 @@ const Login = ({ navigation }) => {
 
   const fetchUser = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:3000/users/${userId}`);
+      const response = await axios.get(`http://localhost:3001/users/${userId}`);
       return response.data.data.user;
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -64,7 +64,7 @@ const Login = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/auth/login", { email, pass: password });
+      const response = await axios.post("http://localhost:3001/auth/login", { email, pass: password });
       const user = response.data.user;
 
       if (user) {

@@ -89,10 +89,10 @@ const ClientView = ({ navigation }) => {
             return (
               <>
                 <TouchableOpacity onPress={handleVideoPress}>
-                  <Card title={"Video de bienvenida"} />
+                  <Card title={"Bienvenida"} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate("Profile", { user })}>
-                  <Card title={"Formulario interactivo"} />
+                  <Card title={"Ficha técnica"} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => navigation.navigate("Workout", { trainingPlan: user.trainingPlan })}>
                   <Card title={"Plan de entrenamiento básico"} />
@@ -100,7 +100,6 @@ const ClientView = ({ navigation }) => {
                 <TouchableOpacity onPress={() => navigation.navigate("Checklist")}>
                   <Card title={"Checklist semanal"} />
                 </TouchableOpacity>
-                {/* <Card title={"Checklist semanal descargable"} /> */}
                 <Card title={"Ejercicio de mentalidad y reflexión"} />
                 <TouchableOpacity onPress={handleBackPress}>
                   <Text style={styles.backButton}>Volver</Text>
@@ -112,19 +111,19 @@ const ClientView = ({ navigation }) => {
               <>
                 <TouchableOpacity onPress={handleStep1Press}>
                   <View style={styles.NoBlockedCard}>
-                    <Text style={styles.cardTitle}>Paso 1</Text>
+                    <Text style={styles.cardTitle}>Fase 1</Text>
                   </View>
                 </TouchableOpacity>
                 <View style={styles.blockedCard}>
-                  <Text style={styles.cardTitle}>Paso 2</Text>
+                  <Text style={styles.cardTitle}>Fase 2</Text>
                   <Icon name="lock-closed" size={40} />
                 </View>
                 <View style={styles.blockedCard}>
-                  <Text style={styles.cardTitle}>Paso 3</Text>
+                  <Text style={styles.cardTitle}>Fase 3</Text>
                   <Icon name="lock-closed" size={40} />
                 </View>
                 <View style={styles.blockedCard}>
-                  <Text style={styles.cardTitle}>Paso 4</Text>
+                  <Text style={styles.cardTitle}>Fase 4</Text>
                   <Icon name="lock-closed" size={40} />
                 </View>
                 <TouchableOpacity onPress={handleBackPress}>

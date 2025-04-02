@@ -26,7 +26,7 @@ const Profile = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/users/${userId}`);
+      const response = await axios.get(`http://localhost:3001/users/${userId}`);
       const userData = response.data.data;
       initializeUserData(userData.user);
       setLoading(false);
@@ -54,7 +54,7 @@ const Profile = () => {
         height,
       };
 
-      const response = await axios.put(`http://localhost:3000/users/${user._id}`, updatedUser);
+      const response = await axios.put(`http://localhost:3001/users/${user._id}`, updatedUser);
 
       const updatedUserData = response.data.data.user;
       setName(updatedUserData.name);
