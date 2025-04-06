@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { View, TouchableOpacity, StyleSheet, Text, Image, Modal } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import PropTypes from "prop-types";
 import { useRoute } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -13,10 +15,109 @@ const ClientView = ({ navigation }) => {
   const route = useRoute();
   const { user } = route.params;
   const username = user?.name || "Usuario";
+
   const [showPPRSteps, setShowPPRSteps] = useState(false);
   const [showStep1Details, setShowStep1Details] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [showReminderCard, setShowReminderCard] = useState(true);
+  const [enabledCards, setEnabledCards] = useState({
+    bienvenida: true,
+    fichaTecnica: false,
+    planEntrenamiento: false,
+    checklist: false,
+    mentalidad: false,
+  });
+  const [progress, setProgress] = useState(0);
+
+  const phases = {
+    fase1: ["bienvenida", "fichaTecnica", "planEntrenamiento", "checklist", "mentalidad"],
+    fase2: ["fase2"],
+    fase3: ["fase3"],
+    fase4: ["fase4"],
+  };
+
+  useEffect(() => {
+    const loadProgressFromDB = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/progress/${user._id}`);
+        const { enabledCards: savedCards, progress: savedProgress } = response.data.data;
+
+        if (savedCards) {
+          setEnabledCards(savedCards);
+        }
+        if (savedProgress !== undefined) {
+          setProgress(savedProgress);
+        }
+      } catch (error) {
+        console.error("Error al cargar el progreso desde la base de datos:", error);
+      }
+    };
+
+    loadProgressFromDB();
+  }, [user._id]);
+
+  const saveProgressToDB = async (updatedCards, updatedProgress) => {
+    try {
+      await axios.post(`http://localhost:3001/progress/${user._id}`, {
+        enabledCards: updatedCards,
+        progress: updatedProgress,
+      });
+    } catch (error) {
+      console.error("Error al guardar el progreso en la base de datos:", error);
+    }
+  };
+
+  useEffect(() => {
+    const calculatePhaseProgress = (phaseCards) => {
+      const completedCards = phaseCards.filter((card) => enabledCards[card]);
+      return completedCards.length / phaseCards.length;
+    };
+
+    const totalPhases = Object.keys(phases).length;
+    const totalProgress = Object.values(phases).reduce((acc, phaseCards) => {
+      return acc + calculatePhaseProgress(phaseCards);
+    }, 0);
+
+    const newProgress = totalProgress / totalPhases;
+    setProgress(newProgress);
+
+    saveProgressToDB(enabledCards, newProgress);
+  }, [enabledCards]);
+
+  const handleCardPress = async (cardName) => {
+    const updatedCards = {
+      ...enabledCards,
+      [cardName]: true,
+    };
+    setEnabledCards(updatedCards);
+
+    try {
+      await AsyncStorage.setItem("enabledCards", JSON.stringify(updatedCards));
+    } catch (error) {
+      console.error("Error al guardar el estado de las tarjetas:", error);
+    }
+  };
+
+  const resetProgress = async () => {
+    const resetCards = {
+      bienvenida: true,
+      fichaTecnica: false,
+      planEntrenamiento: false,
+      checklist: false,
+      mentalidad: false,
+    };
+    setEnabledCards(resetCards);
+    setProgress(0);
+
+    try {
+      await axios.post(`/api/progress/${user._id}`, {
+        enabledCards: resetCards,
+        progress: 0,
+      });
+    } catch (error) {
+      console.error("Error al reiniciar el progreso en la base de datos:", error);
+    }
+  };
 
   const handlePPRPress = () => {
     setShowPPRSteps(true);
@@ -24,6 +125,10 @@ const ClientView = ({ navigation }) => {
 
   const handleBackPress = () => {
     setShowPPRSteps(false);
+    setShowStep1Details(false);
+  };
+
+  const handleBackPressCards = () => {
     setShowStep1Details(false);
   };
 
@@ -71,7 +176,7 @@ const ClientView = ({ navigation }) => {
             return (
               <>
                 <Text style={styles.progressText}>Tu progreso</Text>
-                <ProgressBar progress={0.5} style={styles.progressBar} />
+                <ProgressBar progress={progress} style={styles.progressBar} />
                 {showReminderCard && (
                   <View style={styles.reminderCardContainer}>
                     <Card title={"Recorda ir a entrenar hoy"} />
@@ -88,20 +193,71 @@ const ClientView = ({ navigation }) => {
           } else if (showStep1Details) {
             return (
               <>
-                <TouchableOpacity onPress={handleVideoPress}>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleVideoPress();
+                    handleCardPress("fichaTecnica");
+                  }}
+                  disabled={!enabledCards.bienvenida}
+                  style={!enabledCards.bienvenida ? styles.disabledCard : null}
+                >
                   <Card title={"Bienvenida"} />
+                  {!enabledCards.bienvenida && (
+                    <Icon name="lock-closed" size={30} color="gray" style={styles.lockIcon} />
+                  )}
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("Profile", { user })}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Profile", { user });
+                    handleCardPress("planEntrenamiento");
+                  }}
+                  disabled={!enabledCards.fichaTecnica}
+                  style={!enabledCards.fichaTecnica ? styles.disabledCard : null}
+                >
                   <Card title={"Ficha técnica"} />
+                  {!enabledCards.fichaTecnica && (
+                    <Icon name="lock-closed" size={30} color="gray" style={styles.lockIcon} />
+                  )}
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("Workout", { trainingPlan: user.trainingPlan })}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Workout", { trainingPlan: user.trainingPlan });
+                    handleCardPress("checklist");
+                  }}
+                  disabled={!enabledCards.planEntrenamiento}
+                  style={!enabledCards.planEntrenamiento ? styles.disabledCard : null}
+                >
                   <Card title={"Plan de entrenamiento básico"} />
+                  {!enabledCards.planEntrenamiento && (
+                    <Icon name="lock-closed" size={30} color="gray" style={styles.lockIcon} />
+                  )}
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate("Checklist")}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Checklist");
+                    handleCardPress("mentalidad");
+                  }}
+                  disabled={!enabledCards.checklist}
+                  style={!enabledCards.checklist ? styles.disabledCard : null}
+                >
                   <Card title={"Checklist semanal"} />
+                  {!enabledCards.checklist && (
+                    <Icon name="lock-closed" size={30} color="gray" style={styles.lockIcon} />
+                  )}
                 </TouchableOpacity>
-                <Card title={"Ejercicio de mentalidad y reflexión"} />
-                <TouchableOpacity onPress={handleBackPress}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Mentalidad");
+                  }}
+                  disabled={!enabledCards.mentalidad}
+                  style={!enabledCards.mentalidad ? styles.disabledCard : null}
+                >
+                  <Card title={"Ejercicio de mentalidad y reflexión"} />
+                  {!enabledCards.mentalidad && (
+                    <Icon name="lock-closed" size={30} color="gray" style={styles.lockIcon} />
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleBackPressCards}>
                   <Text style={styles.backButton}>Volver</Text>
                 </TouchableOpacity>
               </>
@@ -337,6 +493,16 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  disabledCard: {
+    opacity: 0.5,
+    position: "relative",
+  },
+  lockIcon: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -15 }, { translateY: -15 }],
   },
 });
 
