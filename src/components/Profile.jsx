@@ -21,20 +21,20 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/users/${userId}`);
+        const userData = response.data.data;
+        initializeUserData(userData.user);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        setLoading(false);
+      }
+    };
+
     fetchUser();
   }, []);
-
-  const fetchUser = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3001/users/${userId}`);
-      const userData = response.data.data;
-      initializeUserData(userData.user);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      setLoading(false);
-    }
-  };
 
   const initializeUserData = (userData) => {
     setUser(userData);
