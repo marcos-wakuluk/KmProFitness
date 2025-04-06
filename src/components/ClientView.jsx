@@ -14,7 +14,7 @@ import { ProgressBar } from "react-native-paper";
 const ClientView = ({ navigation }) => {
   const route = useRoute();
   const { user } = route.params;
-  const username = user?.name || "Usuario";
+  const username = user?.name || "";
 
   const [showPPRSteps, setShowPPRSteps] = useState(false);
   const [showStep1Details, setShowStep1Details] = useState(false);

@@ -8,7 +8,7 @@ import * as ImagePicker from "expo-image-picker";
 
 const Profile = () => {
   const route = useRoute();
-  const { userId } = route.params || {};
+  const { _id: userId } = route.params.user || {};
 
   const [user, setUser] = useState("");
   const [name, setName] = useState("");
@@ -127,7 +127,7 @@ const Profile = () => {
           />
           <TextInput
             label="Edad"
-            value={age.toString()}
+            value={age.toString() || ""}
             onChangeText={setAge}
             keyboardType="numeric"
             editable={editMode}
