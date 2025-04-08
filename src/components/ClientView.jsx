@@ -9,7 +9,12 @@ import Card from "./Card";
 import Contact from "./Contact";
 import { motivationalQuotes } from "../constants";
 // import Video from "react-native-video";
-import { ProgressBar } from "react-native-paper";
+import ProgressBarSection from "./ProgressBarSection";
+import ReminderCard from "./ReminderCard";
+import MenuSection from "./MenuSection";
+import CardsSection1 from "./CardsSection1";
+
+const API_BASE_URL = process.env.API_BASE_URL;
 
 const ClientView = ({ navigation }) => {
   const route = useRoute();
@@ -18,6 +23,7 @@ const ClientView = ({ navigation }) => {
 
   const [showPPRSteps, setShowPPRSteps] = useState(false);
   const [showStep1Details, setShowStep1Details] = useState(false);
+  const [showStep2Details, setShowStep2Details] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [showReminderCard, setShowReminderCard] = useState(true);
   const [enabledCards, setEnabledCards] = useState({
@@ -28,18 +34,34 @@ const ClientView = ({ navigation }) => {
     mentalidad: false,
   });
   const [progress, setProgress] = useState(0);
+  const isMainView = !showPPRSteps && !showStep1Details && !showStep2Details;
 
   const phases = {
     fase1: ["bienvenida", "fichaTecnica", "planEntrenamiento", "checklist", "mentalidad"],
-    fase2: ["fase2"],
-    fase3: ["fase3"],
-    fase4: ["fase4"],
+    fase2: [
+      "guia de entreno para tus objetivos y necesidades",
+      "Guía descargable para calcular macros",
+      "Checklist de hábitos diarios para profundizar el cambio",
+      "Reto de 7 días",
+    ],
+    fase3: [
+      "Formulario de actualización de medidas",
+      "Entrenamiento progresivo",
+      "Guía de comidas libres estratégicas",
+      "Desafío de 3 días intensivos",
+    ],
+    fase4: [
+      "Formulario de actualización de medidas",
+      "Entrenamiento progresivo",
+      "Guía de comidas libres estratégicas",
+      "Desafío de 3 días intensivos",
+    ],
   };
 
   useEffect(() => {
     const loadProgressFromDB = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/progress/${user._id}`);
+        const response = await axios.get(`${API_BASE_URL}/progress/${user._id}`);
         const { enabledCards: savedCards, progress: savedProgress } = response.data.data;
 
         if (savedCards) {
@@ -54,11 +76,11 @@ const ClientView = ({ navigation }) => {
     };
 
     loadProgressFromDB();
-  }, [user._id]);
+  }, [user?._id]);
 
   const saveProgressToDB = async (updatedCards, updatedProgress) => {
     try {
-      await axios.post(`http://localhost:3001/progress/${user._id}`, {
+      await axios.post(`${API_BASE_URL}/progress/${user._id}`, {
         enabledCards: updatedCards,
         progress: updatedProgress,
       });
@@ -68,19 +90,18 @@ const ClientView = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const calculatePhaseProgress = (phaseCards) => {
-      const completedCards = phaseCards.filter((card) => enabledCards[card]);
-      return completedCards.length / phaseCards.length;
+    const calculateProgress = () => {
+      const totalPhases = Object.keys(phases).length;
+      const totalProgress = Object.values(phases).reduce((acc, phaseCards) => {
+        const completedCards = phaseCards.filter((card) => enabledCards[card]);
+        return acc + completedCards.length / phaseCards.length;
+      }, 0);
+
+      return totalProgress / totalPhases;
     };
 
-    const totalPhases = Object.keys(phases).length;
-    const totalProgress = Object.values(phases).reduce((acc, phaseCards) => {
-      return acc + calculatePhaseProgress(phaseCards);
-    }, 0);
-
-    const newProgress = totalProgress / totalPhases;
+    const newProgress = calculateProgress();
     setProgress(newProgress);
-
     saveProgressToDB(enabledCards, newProgress);
   }, [enabledCards]);
 
@@ -98,34 +119,15 @@ const ClientView = ({ navigation }) => {
     }
   };
 
-  const resetProgress = async () => {
-    const resetCards = {
-      bienvenida: true,
-      fichaTecnica: false,
-      planEntrenamiento: false,
-      checklist: false,
-      mentalidad: false,
-    };
-    setEnabledCards(resetCards);
-    setProgress(0);
-
-    try {
-      await axios.post(`/api/progress/${user._id}`, {
-        enabledCards: resetCards,
-        progress: 0,
-      });
-    } catch (error) {
-      console.error("Error al reiniciar el progreso en la base de datos:", error);
-    }
-  };
-
   const handlePPRPress = () => {
     setShowPPRSteps(true);
   };
 
-  const handleBackPress = () => {
+  const handleBackPress = (resetStep = false) => {
     setShowPPRSteps(false);
-    setShowStep1Details(false);
+    if (resetStep) {
+      setShowStep1Details(false);
+    }
   };
 
   const handleBackPressCards = () => {
@@ -133,7 +135,12 @@ const ClientView = ({ navigation }) => {
   };
 
   const handleStep1Press = () => {
+    setShowPPRSteps(false);
     setShowStep1Details(true);
+  };
+
+  const handleStep2Press = () => {
+    setShowStep2Details(true);
   };
 
   const handleVideoPress = () => {
@@ -156,146 +163,70 @@ const ClientView = ({ navigation }) => {
       <Image source={require("../assets/KM-white.png")} style={styles.image} />
 
       <View style={styles.contentContainer}>
-        <View style={styles.menuContainer}>
-          <TouchableOpacity onPress={() => navigation.navigate("Profile", { userId: user._id })}>
-            <Icon name="person" size={30} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("DietPlanScreen", { mealPlan: user.mealPlan })}>
-            <Icon name="restaurant" size={30} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Workout", { trainingPlan: user.trainingPlan })}>
-            <Icon name="barbell-sharp" size={40} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Payment")}>
-            <Icon name="wallet" size={30} color="black" />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.welcomeText}>{`Hola ${username}`}</Text>
-        {(() => {
-          if (!showPPRSteps) {
-            return (
-              <>
-                <Text style={styles.progressText}>Tu progreso</Text>
-                <ProgressBar progress={progress} style={styles.progressBar} />
-                {showReminderCard && (
-                  <View style={styles.reminderCardContainer}>
-                    <Card title={"Recorda ir a entrenar hoy"} />
-                    <TouchableOpacity style={styles.closeButtonReminder} onPress={handleCloseReminderCard}>
-                      <Text style={styles.closeButtonTextReminder}>X</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-                <TouchableOpacity onPress={handlePPRPress}>
-                  <Card title={"Tu Ruta de Transformación"} />
-                </TouchableOpacity>
-              </>
-            );
-          } else if (showStep1Details) {
-            return (
-              <>
-                <TouchableOpacity
-                  onPress={() => {
-                    handleVideoPress();
-                    handleCardPress("fichaTecnica");
-                  }}
-                  disabled={!enabledCards.bienvenida}
-                  style={!enabledCards.bienvenida ? styles.disabledCard : null}
-                >
-                  <Card title={"Bienvenida"} />
-                  {!enabledCards.bienvenida && (
-                    <Icon name="lock-closed" size={30} color="gray" style={styles.lockIcon} />
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("Profile", { user });
-                    handleCardPress("planEntrenamiento");
-                  }}
-                  disabled={!enabledCards.fichaTecnica}
-                  style={!enabledCards.fichaTecnica ? styles.disabledCard : null}
-                >
-                  <Card title={"Ficha técnica"} />
-                  {!enabledCards.fichaTecnica && (
-                    <Icon name="lock-closed" size={30} color="gray" style={styles.lockIcon} />
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("Workout", { trainingPlan: user.trainingPlan });
-                    handleCardPress("checklist");
-                  }}
-                  disabled={!enabledCards.planEntrenamiento}
-                  style={!enabledCards.planEntrenamiento ? styles.disabledCard : null}
-                >
-                  <Card title={"Plan de entrenamiento básico"} />
-                  {!enabledCards.planEntrenamiento && (
-                    <Icon name="lock-closed" size={30} color="gray" style={styles.lockIcon} />
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("Checklist");
-                    handleCardPress("mentalidad");
-                  }}
-                  disabled={!enabledCards.checklist}
-                  style={!enabledCards.checklist ? styles.disabledCard : null}
-                >
-                  <Card title={"Checklist semanal"} />
-                  {!enabledCards.checklist && (
-                    <Icon name="lock-closed" size={30} color="gray" style={styles.lockIcon} />
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("Mentalidad");
-                  }}
-                  disabled={!enabledCards.mentalidad}
-                  style={!enabledCards.mentalidad ? styles.disabledCard : null}
-                >
-                  <Card title={"Ejercicio de mentalidad y reflexión"} />
-                  {!enabledCards.mentalidad && (
-                    <Icon name="lock-closed" size={30} color="gray" style={styles.lockIcon} />
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleBackPressCards}>
-                  <Text style={styles.backButton}>Volver</Text>
-                </TouchableOpacity>
-              </>
-            );
-          } else {
-            return (
-              <>
-                <TouchableOpacity onPress={handleStep1Press}>
-                  <View style={styles.NoBlockedCard}>
-                    <Text style={styles.cardTitle}>Fase 1</Text>
-                  </View>
-                </TouchableOpacity>
-                <View style={styles.blockedCard}>
-                  <Text style={styles.cardTitle}>Fase 2</Text>
-                  <Icon name="lock-closed" size={40} />
-                </View>
-                <View style={styles.blockedCard}>
-                  <Text style={styles.cardTitle}>Fase 3</Text>
-                  <Icon name="lock-closed" size={40} />
-                </View>
-                <View style={styles.blockedCard}>
-                  <Text style={styles.cardTitle}>Fase 4</Text>
-                  <Icon name="lock-closed" size={40} />
-                </View>
-                <TouchableOpacity onPress={handleBackPress}>
-                  <Text style={styles.backButton}>Volver</Text>
-                </TouchableOpacity>
-              </>
-            );
-          }
-        })()}
+        <MenuSection navigation={navigation} user={user} />
+        {showReminderCard && <ReminderCard onClose={handleCloseReminderCard} />}
+        <ProgressBarSection progress={progress} />
+        {isMainView && (
+          <>
+            <Text style={styles.welcomeText}>{`Hola ${username}`}</Text>
+            <TouchableOpacity onPress={handlePPRPress}>
+              <Card title={"Tu Ruta de Transformación"} />
+            </TouchableOpacity>
+          </>
+        )}
+
+        {showPPRSteps && !showStep1Details && !showStep2Details && (
+          <>
+            <TouchableOpacity onPress={handleStep1Press}>
+              <View style={styles.cardBase}>
+                <Text style={styles.cardTitle}>Fase 1</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleStep2Press}>
+              <View style={[styles.cardBase, styles.blockedCard]}>
+                <Text style={styles.cardTitle}>Fase 2</Text>
+                <Icon name="lock-closed" size={40} />
+              </View>
+            </TouchableOpacity>
+            <View style={[styles.cardBase, styles.blockedCard]}>
+              <Text style={styles.cardTitle}>Fase 3</Text>
+              <Icon name="lock-closed" size={40} />
+            </View>
+            <View style={[styles.cardBase, styles.blockedCard]}>
+              <Text style={styles.cardTitle}>Fase 4</Text>
+              <Icon name="lock-closed" size={40} />
+            </View>
+            <TouchableOpacity onPress={handleBackPress}>
+              <Text style={styles.backButton}>Volver</Text>
+            </TouchableOpacity>
+          </>
+        )}
+
+        {showStep1Details && (
+          <CardsSection1
+            enabledCards={enabledCards}
+            handleCardPress={handleCardPress}
+            handleBackPressCards={handleBackPressCards}
+            handleVideoPress={handleVideoPress}
+            navigation={navigation}
+            user={user}
+          />
+        )}
+
+        {showStep2Details && (
+          <View style={styles.disabledCard}>
+            <Text style={styles.cardTitle}>Fase 2</Text>
+          </View>
+        )}
+
+        {!showPPRSteps && !showStep1Details && !showStep2Details && (
+          <View style={styles.motivationalCardContainer}>
+            <Card phrases={motivationalQuotes} />
+          </View>
+        )}
       </View>
-      {!showPPRSteps && (
-        <View style={styles.motivationalCardContainer}>
-          <Card phrases={motivationalQuotes} />
-        </View>
-      )}
-      <View style={[styles.contactContainer, { backgroundColor: "white" }]}>
+
+      <View style={[styles.contactContainer]}>
         <Contact />
       </View>
       <Modal visible={showVideo} transparent={true} animationType="slide">
@@ -316,46 +247,25 @@ const ClientView = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  blockedCard: {
+  cardBase: {
+    height: 60,
     backgroundColor: "#d8f0ff",
     borderRadius: 8,
     borderColor: "#53c0ff",
     borderWidth: 1,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     padding: 10,
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
     margin: 10,
-    filter: "brightness(60%)",
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    height: 60,
   },
-  NoBlockedCard: {
-    height: 60,
-    backgroundColor: "#d8f0ff",
-    borderRadius: 8,
-    borderColor: "#53c0ff",
-    borderWidth: 1,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    padding: 10,
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    margin: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
+  blockedCard: {
+    filter: "brightness(60%)",
   },
   cardTitle: {
     position: "absolute",
@@ -391,18 +301,13 @@ const styles = StyleSheet.create({
     flex: 1,
     zIndex: 1,
   },
-  menuContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    padding: 10,
-  },
   contactContainer: {
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     paddingBottom: "5%",
+    backgroundColor: "white",
   },
   welcomeText: {
     fontSize: 40,
@@ -410,12 +315,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
     marginTop: 20,
-  },
-  progressText: {
-    fontSize: 30,
-    color: "black",
-    marginBottom: 5,
-    textAlign: "center",
   },
   image: {
     position: "absolute",
@@ -463,36 +362,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 80,
     width: "100%",
-  },
-  reminderCardContainer: {
-    position: "absolute",
-    top: 10,
-    left: 10,
-    right: 10,
-    borderRadius: 10,
-    padding: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-    zIndex: 1000,
-  },
-  closeButtonReminder: {
-    position: "absolute",
-    top: 5,
-    right: 5,
-    backgroundColor: "black",
-    borderRadius: 15,
-    width: 30,
-    height: 30,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  closeButtonTextReminder: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
   },
   disabledCard: {
     opacity: 0.5,

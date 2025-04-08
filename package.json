@@ -62,7 +62,8 @@
     "eslint-plugin-promise": "^7.1.0",
     "eslint-plugin-react": "^7.37.2",
     "expo": "^52.0.21",
-    "react-native-dotenv": "^3.4.11"
+    "react-native-dotenv": "^3.4.11",
+    "typescript": "^5.3.3"
   },
   "private": true,
   "eslintConfig": {

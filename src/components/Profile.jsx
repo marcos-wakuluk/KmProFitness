@@ -41,7 +41,7 @@ const Profile = () => {
     setName(userData.name || "");
     setPhone(userData.phone || "");
     setAge(calculateAge(userData.birthday || ""));
-    setWeight(userData.details[0].weight || "");
+    setWeight(userData.details[0]?.weight || "");
     setHeight(userData.height || "");
   };
 
@@ -54,7 +54,7 @@ const Profile = () => {
         height,
       };
 
-      const response = await axios.put(`http://localhost:3001/users/${user._id}`, updatedUser);
+      const response = await axios.put(`http://localhost:3001/users/${userId}`, updatedUser);
 
       const updatedUserData = response.data.data.user;
       setName(updatedUserData.name);
@@ -147,7 +147,7 @@ const Profile = () => {
           />
           <TextInput
             label="Peso"
-            value={weight.toString()}
+            value={weight}
             onChangeText={setWeight}
             keyboardType="numeric"
             editable={editMode}
