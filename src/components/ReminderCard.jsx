@@ -1,16 +1,59 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native";
 
 const ReminderCard = ({ onClose }) => {
+  const slideAnim = useRef(new Animated.Value(-100)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  const handleClose = () => {
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: -100,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      if (onClose) onClose();
+    });
+  };
+
   return (
-    <View style={styles.reminderCardContainer}>
+    <Animated.View
+      style={[
+        styles.reminderCardContainer,
+        {
+          opacity: fadeAnim,
+          transform: [{ translateY: slideAnim }],
+        },
+      ]}
+    >
       <View style={styles.card}>
         <Text style={styles.message}>Recorda ir a entrenar hoy.</Text>
-        <TouchableOpacity style={styles.closeButtonReminder} onPress={onClose}>
+        <TouchableOpacity style={styles.closeButtonReminder} onPress={handleClose}>
           <Text style={styles.closeButtonText}>X</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

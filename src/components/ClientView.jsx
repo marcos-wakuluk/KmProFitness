@@ -306,7 +306,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    paddingBottom: "5%",
     backgroundColor: "white",
   },
   welcomeText: {

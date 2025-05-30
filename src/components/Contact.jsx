@@ -1,6 +1,5 @@
-import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Linking } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { View, StyleSheet, TouchableOpacity, Text, Linking } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const Contact = () => {
   const handleWhatsAppPress = () => {
@@ -14,7 +13,6 @@ const Contact = () => {
     <>
       <View style={styles.divider} />
       <View style={styles.socialLinksContainer}>
-
         <TouchableOpacity onPress={handleWhatsAppPress}>
           <View style={styles.iconContainer}>
             <Icon name="whatsapp" size={30} color="green" />
@@ -28,7 +26,6 @@ const Contact = () => {
             <Text style={styles.iconText}>Km Pro Fitness</Text>
           </View>
         </TouchableOpacity>
-
       </View>
     </>
   );
@@ -36,23 +33,25 @@ const Contact = () => {
 
 const styles = StyleSheet.create({
   divider: {
-    backgroundColor: 'black',
+    backgroundColor: "black",
     height: 2,
-    width: '100%',
+    width: "100%",
   },
   socialLinksContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 10,
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 5,
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+    marginBottom: 5,
   },
   iconContainer: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   iconText: {
     marginTop: 5,
-    color: 'black',
-    fontSize: 12,
+    color: "black",
+    fontSize: 16,
   },
 });
 

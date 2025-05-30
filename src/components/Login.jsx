@@ -92,34 +92,39 @@ const Login = ({ navigation }) => {
       <Image source={require("../assets/KM-color-black.png")} style={styles.logo} />
       <Input
         placeholder="Email"
+        placeholderTextColor="rgba(255,255,255,0.7)"
         value={email}
         onChangeText={setEmail}
         containerStyle={styles.inputContainer}
+        inputContainerStyle={styles.inputInnerContainer}
         inputStyle={styles.input}
         leftIcon={{ type: "font-awesome", name: "envelope", color: "#fff" }}
       />
+
       <Input
         placeholder="Contraseña"
+        placeholderTextColor="rgba(255,255,255,0.7)"
         value={password}
         onChangeText={setPassword}
         secureTextEntry={!showPassword}
         containerStyle={styles.inputContainer}
+        inputContainerStyle={styles.inputInnerContainer}
         inputStyle={styles.input}
         leftIcon={{ type: "font-awesome", name: "lock", color: "#fff" }}
         rightIcon={
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <FontAwesome name={showPassword ? "eye" : "eye-slash"} size={24} color="#fff" />
+            <FontAwesome name={showPassword ? "eye" : "eye-slash"} size={22} color="#fff" />
           </TouchableOpacity>
         }
       />
       <TouchableOpacity onPress={handleForgotPassword}>
-        <Text style={styles.forgotPasswordText}>Olvido su contraseña?</Text>
+        <Text style={styles.forgotPasswordText}>Olvidó su contraseña?</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>LOGIN</Text>
+        <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleRegister}>
-        <Text style={styles.registerText}>¿No tienes una cuenta? Registrarse</Text>
+        <Text style={styles.registerText}>¿No tienes una cuenta? Registraarse</Text>
       </TouchableOpacity>
     </View>
   );
@@ -130,25 +135,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0061a7",
     alignItems: "center",
-    padding: 20,
+    paddingHorizontal: 20,
   },
   logo: {
     width: 275,
     height: 150,
-    marginTop: "20%",
-    marginBottom: "10%",
+    marginTop: "40%",
+    marginBottom: "20%",
   },
   inputContainer: {
     width: "100%",
     marginBottom: 15,
   },
-  input: {
-    color: "#fff",
-  },
   forgotPasswordText: {
     color: "#fff",
     marginBottom: 20,
     textAlign: "right",
+    fontSize: 18,
   },
   loginButton: {
     backgroundColor: "#00aaff",
@@ -162,11 +165,35 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 22,
   },
   registerText: {
     color: "#fff",
     marginTop: 15,
+    fontSize: 18,
+  },
+  inputContainer: {
+    width: "100%",
+    marginBottom: 15,
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  inputInnerContainer: {
+    backgroundColor: "rgba(255,255,255,0.1)",
+    borderBottomWidth: 0,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  input: {
+    color: "#fff",
+    fontSize: 18,
+    paddingLeft: 5,
   },
 });
 
