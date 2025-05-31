@@ -46,7 +46,7 @@ const AssignWorkoutView = ({ navigation, route }) => {
 
   const filteredUsers = users.filter((user) => {
     const normalizedSearchText = searchText.toLowerCase();
-    const normalizedUserName = user.name.toLowerCase();
+    const normalizedUserName = (user?.name ?? user?.email ?? "").toLowerCase();
     return normalizedUserName.includes(normalizedSearchText);
   });
 
@@ -79,7 +79,7 @@ const AssignWorkoutView = ({ navigation, route }) => {
     return (
       <View style={styles.userItem}>
         <Text style={styles.userName}>{item.name}</Text>
-        <Text>{fechaFormateada}</Text>
+        <Text style={styles.date}>{fechaFormateada}</Text>
         <CheckBox checked={item.trainingPlan === workoutId} onPress={() => handleCheckboxChange(item._id)} />
       </View>
     );
@@ -89,12 +89,15 @@ const AssignWorkoutView = ({ navigation, route }) => {
     <>
       <View style={styles.background}></View>
       <Image source={require("../assets/KM-white.png")} style={styles.image} />
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Buscar usuario"
-        value={searchText}
-        onChangeText={handleSearch}
-      />
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Buscar usuario"
+          value={searchText}
+          onChangeText={handleSearch}
+        />
+      </View>
+
       <FlatList data={filteredUsers} keyExtractor={(user) => user._id.toString()} renderItem={renderUserItem} />
       <Button title="Guardar" onPress={handleSaveChanges} />
     </>
@@ -104,7 +107,7 @@ const AssignWorkoutView = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   background: {
     position: "absolute",
-    backgroundColor: "#069af1",
+    backgroundColor: "#0061a7",
     top: 0,
     bottom: 0,
     left: 0,
@@ -135,6 +138,19 @@ const styles = StyleSheet.create({
   },
   userName: {
     marginRight: "auto",
+    fontSize: 24,
+  },
+  date: {
+    fontSize: 18,
+  },
+  searchInput: {
+    flex: 1,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    color: "#333333",
+    marginRight: 10,
   },
 });
 

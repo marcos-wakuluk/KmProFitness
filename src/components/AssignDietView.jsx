@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { View, TextInput, StyleSheet, Text, FlatList, Button, Image, ActivityIndicator } from "react-native";
 import { CheckBox } from "react-native-elements";
@@ -57,7 +57,7 @@ const AssignDietView = ({ navigation, route }) => {
     return (
       <View style={styles.userItem}>
         <Text style={styles.userName}>{item.name}</Text>
-        <Text>{fechaFormateada}</Text>
+        <Text stile={styles.date}>{fechaFormateada}</Text>
         <CheckBox checked={userCheckboxes[item._id]} onPress={() => handleCheckboxChange(item._id)} />
       </View>
     );
@@ -69,7 +69,7 @@ const AssignDietView = ({ navigation, route }) => {
 
   const filteredUsers = users.filter((user) => {
     const normalizedSearchText = searchText.toLowerCase();
-    const normalizedUserName = user.name.toLowerCase();
+    const normalizedUserName = (user?.name ?? user?.email ?? "").toLowerCase();
     return normalizedUserName.includes(normalizedSearchText);
   });
 
@@ -104,12 +104,14 @@ const AssignDietView = ({ navigation, route }) => {
     <>
       <View style={styles.background}></View>
       <Image source={require("../assets/KM-white.png")} style={styles.image} />
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Buscar usuario"
-        value={searchText}
-        onChangeText={handleSearch}
-      />
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Buscar usuario"
+          value={searchText}
+          onChangeText={handleSearch}
+        />
+      </View>
       <FlatList data={filteredUsers} keyExtractor={(user) => user._id.toString()} renderItem={renderUserItem} />
       <Button title="Guardar" onPress={handleSaveChanges} />
     </>
@@ -145,11 +147,29 @@ const styles = StyleSheet.create({
   },
   userName: {
     marginRight: "auto",
+    fontSize: 24,
+  },
+  date: {
+    fontSize: 18,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  searchInput: {
+    flex: 1,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    color: "#333333",
+    marginRight: 10,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
   },
 });
 
