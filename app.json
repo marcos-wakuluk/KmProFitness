@@ -8,7 +8,7 @@
     "splash": {
       "image": "./src/assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "black"
     },
     "assetBundlePatterns": ["**/*"],
     "jsEngine": "hermes",
@@ -28,7 +28,7 @@
       "package": "com.WakulukMarcos.kmprofitness",
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "black"
       },
       "newArchEnabled": true
     },
@@ -42,7 +42,7 @@
       }
     },
     "androidStatusBar": {
-      "backgroundColor": "#0061a7",
+      "backgroundColor": "black",
       "translucent": true
     }
   }

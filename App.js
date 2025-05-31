@@ -15,6 +15,7 @@ import UserDetail from "./src/components/UserDetail";
 import AssignDietView from "./src/components/AssignDietView";
 import AssignWorkoutView from "./src/components/AssignWorkoutView";
 import Checklist from "./src/components/Checklist";
+import TechnicalSheet from "./src/components/TechnicalSheet";
 import { SafeAreaView, StatusBar } from "react-native";
 
 const Stack = createStackNavigator();
@@ -39,6 +40,7 @@ export default function App() {
           <Stack.Screen options={{ headerShown: false }} name="AssignWorkoutView" component={AssignWorkoutView} />
           <Stack.Screen options={{ headerShown: false }} name="WorkoutList" component={WorkoutList} />
           <Stack.Screen options={{ headerShown: false }} name="Checklist" component={Checklist} />
+          <Stack.Screen options={{ headerShown: false }} name="TechnicalSheet" component={TechnicalSheet} />
           <Stack.Screen
             options={{ headerShown: false }}
             name="DietPlanScreen"

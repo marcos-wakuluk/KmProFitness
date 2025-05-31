@@ -8,8 +8,8 @@ import { FontAwesome } from "@expo/vector-icons";
 WebBrowser.maybeCompleteAuthSession();
 
 const Login = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("wakuluk.marcos@gmail.com");
+  const [password, setPassword] = useState("da6d3hxa");
   const [userInfo, setUserInfo] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 

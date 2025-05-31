@@ -48,7 +48,7 @@ const ReminderCard = ({ onClose }) => {
       ]}
     >
       <View style={styles.card}>
-        <Text style={styles.message}>Recorda ir a entrenar hoy.</Text>
+        <Text style={styles.message}>Recordá entrenar hoy</Text>
         <TouchableOpacity style={styles.closeButtonReminder} onPress={handleClose}>
           <Text style={styles.closeButtonText}>X</Text>
         </TouchableOpacity>
@@ -81,11 +81,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 80,
   },
   message: {
-    fontSize: 24,
+    fontSize: 26,
     color: "#555",
-    marginBottom: 20,
+    textAlign: "center",
+    width: "100%",
   },
   closeButtonReminder: {
     position: "absolute",

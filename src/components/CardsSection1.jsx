@@ -18,7 +18,7 @@ const CardsSection1 = ({ enabledCards, handleCardPress, handleBackPressCards, ha
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("Profile", { user });
+          navigation.navigate("TechnicalSheet", { user });
           handleCardPress("planEntrenamiento");
         }}
         disabled={!enabledCards.fichaTecnica}
