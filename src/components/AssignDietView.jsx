@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { View, TextInput, StyleSheet, Text, FlatList, Button, Image, ActivityIndicator } from "react-native";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { CheckBox } from "react-native-elements";
 import { API_BASE_URL } from "@env";
 
@@ -23,7 +33,7 @@ const AssignDietView = ({ navigation, route }) => {
         },
       });
       setUsers(data.data.users);
-      initializeCheckboxes(data.users);
+      initializeCheckboxes(data.data.users);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -34,7 +44,7 @@ const AssignDietView = ({ navigation, route }) => {
   const initializeCheckboxes = (users) => {
     const checkboxes = {};
     users.forEach((user) => {
-      checkboxes[user._id] = user.mealPlan === dietId;
+      checkboxes[user._id] = user.mealPlan == dietId;
     });
     setUserCheckboxes(checkboxes);
   };
@@ -47,16 +57,19 @@ const AssignDietView = ({ navigation, route }) => {
   };
 
   const renderUserItem = ({ item }) => {
-    const fecha = new Date(item.lastUpdateMeal);
-    const dia = fecha.getDate();
-    const mes = fecha.getMonth() + 1;
-    const anio = fecha.getFullYear();
-    const fechaFormateada = `${dia < 10 ? "0" + dia : dia}/${mes < 10 ? "0" + mes : mes}/${anio}`;
+    let fechaFormateada = "";
+    if (item.mealPlan !== null && item.lastUpdateMeal) {
+      const fecha = new Date(item.lastUpdateMeal);
+      const dia = fecha.getDate();
+      const mes = fecha.getMonth() + 1;
+      const anio = fecha.getFullYear();
+      fechaFormateada = `${dia < 10 ? "0" + dia : dia}/${mes < 10 ? "0" + mes : mes}/${anio}`;
+    }
 
     return (
       <View style={styles.userItem}>
         <Text style={styles.userName}>{item.name}</Text>
-        <Text stile={styles.date}>{fechaFormateada}</Text>
+        {item.mealPlan !== null && fechaFormateada !== "" && <Text style={styles.date}>{fechaFormateada}</Text>}
         <CheckBox checked={userCheckboxes[item._id]} onPress={() => handleCheckboxChange(item._id)} />
       </View>
     );
@@ -74,14 +87,20 @@ const AssignDietView = ({ navigation, route }) => {
 
   const handleSaveChanges = async () => {
     try {
+      const usersToUpdate = filteredUsers.filter(
+        (user) => (userCheckboxes[user._id] ? dietId : null) !== user.mealPlan
+      );
+
       await Promise.all(
-        filteredUsers.map(async (user) => {
+        usersToUpdate.map(async (user) => {
           const newMealPlan = userCheckboxes[user._id] ? dietId : null;
           await axios.put(`${API_BASE_URL}/users/${user._id}`, { mealPlan: newMealPlan });
         })
       );
+      Alert.alert("Cambios guardados correctamente");
       navigation.goBack();
     } catch (error) {
+      Alert.alert("Error", "Ha ocurrido un error al guardar los cambios");
       console.error("Error al guardar cambios:", error);
     }
   };
@@ -107,7 +126,9 @@ const AssignDietView = ({ navigation, route }) => {
         />
       </View>
       <FlatList data={filteredUsers} keyExtractor={(user) => user._id.toString()} renderItem={renderUserItem} />
-      <Button title="Guardar" onPress={handleSaveChanges} />
+      <TouchableOpacity style={styles.saveButton} onPress={handleSaveChanges}>
+        <Text style={styles.saveButtonText}>Guardar</Text>
+      </TouchableOpacity>
     </>
   );
 };
@@ -164,6 +185,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
+  },
+  saveButton: {
+    backgroundColor: "#00aaff",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    alignItems: "center",
+    margin: 20,
+    elevation: 3,
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 20,
+    letterSpacing: 1,
   },
 });
 

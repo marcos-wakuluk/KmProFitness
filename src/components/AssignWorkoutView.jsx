@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { View, TextInput, StyleSheet, Text, FlatList, Button, Image, ActivityIndicator } from "react-native";
+import { View, TextInput, StyleSheet, Text, FlatList, TouchableOpacity, Image, ActivityIndicator } from "react-native";
 import { CheckBox } from "react-native-elements";
 import { API_BASE_URL } from "@env";
 
@@ -71,16 +71,19 @@ const AssignWorkoutView = ({ navigation, route }) => {
   }
 
   const renderUserItem = ({ item }) => {
-    const fecha = new Date(item.lastUpdateTraining);
-    const dia = fecha.getDate();
-    const mes = fecha.getMonth() + 1;
-    const anio = fecha.getFullYear();
-    const fechaFormateada = `${dia < 10 ? "0" + dia : dia}/${mes < 10 ? "0" + mes : mes}/${anio}`;
+    let fechaFormateada = "";
+    if (item.mealPlan !== null && item.lastUpdateTraining) {
+      const fecha = new Date(item.lastUpdateTraining);
+      const dia = fecha.getDate();
+      const mes = fecha.getMonth() + 1;
+      const anio = fecha.getFullYear();
+      fechaFormateada = `${dia < 10 ? "0" + dia : dia}/${mes < 10 ? "0" + mes : mes}/${anio}`;
+    }
 
     return (
       <View style={styles.userItem}>
         <Text style={styles.userName}>{item.name}</Text>
-        <Text style={styles.date}>{fechaFormateada}</Text>
+        {item.mealPlan !== null && fechaFormateada !== "" && <Text style={styles.date}>{fechaFormateada}</Text>}
         <CheckBox checked={item.trainingPlan === workoutId} onPress={() => handleCheckboxChange(item._id)} />
       </View>
     );
@@ -98,9 +101,10 @@ const AssignWorkoutView = ({ navigation, route }) => {
           onChangeText={handleSearch}
         />
       </View>
-
       <FlatList data={filteredUsers} keyExtractor={(user) => user._id.toString()} renderItem={renderUserItem} />
-      <Button title="Guardar" onPress={handleSaveChanges} />
+      <TouchableOpacity style={styles.saveButton} onPress={handleSaveChanges}>
+        <Text style={styles.saveButtonText}>Guardar</Text>
+      </TouchableOpacity>
     </>
   );
 };
@@ -152,6 +156,21 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     color: "#333333",
     marginRight: 10,
+  },
+  saveButton: {
+    backgroundColor: "#00aaff",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    alignItems: "center",
+    margin: 20,
+    elevation: 3,
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 20,
+    letterSpacing: 1,
   },
 });
 
