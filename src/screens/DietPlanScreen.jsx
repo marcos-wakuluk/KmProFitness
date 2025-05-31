@@ -15,9 +15,8 @@ const DietPlanScreen = ({ route }) => {
   useEffect(() => {
     const fetchMealPlan = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/mealPlans/${mealPlan}`);
-
-        setMealPlanUrl(response.data.mealPdfUrl);
+        const { data } = await axios.get(`${API_BASE_URL}/mealPlans/${mealPlan}`);
+        setMealPlanUrl(data.mealPdfUrl);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching meal plan:", error);

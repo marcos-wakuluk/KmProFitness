@@ -17,13 +17,12 @@ const AssignDietView = ({ navigation, route }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/users`, {
+      const { data } = await axios.get(`${API_BASE_URL}/users`, {
         params: {
           field: "name,mealPlan,lastUpdate",
         },
       });
-      const { data } = response.data;
-      setUsers(data.users);
+      setUsers(data.data.users);
       initializeCheckboxes(data.users);
       setLoading(false);
     } catch (error) {
@@ -75,17 +74,12 @@ const AssignDietView = ({ navigation, route }) => {
 
   const handleSaveChanges = async () => {
     try {
-      const updatedUsers = filteredUsers.map(async (user) => {
-        if (userCheckboxes[user._id]) {
-          await axios.put(`${API_BASE_URL}/users/${user._id}`, { mealPlan: dietId });
-          return { ...user, mealPlan: dietId };
-        } else {
-          await axios.put(`${API_BASE_URL}/users/${user._id}`, { mealPlan: null });
-          return { ...user, mealPlan: null };
-        }
-      });
-
-      await Promise.all(updatedUsers);
+      await Promise.all(
+        filteredUsers.map(async (user) => {
+          const newMealPlan = userCheckboxes[user._id] ? dietId : null;
+          await axios.put(`${API_BASE_URL}/users/${user._id}`, { mealPlan: newMealPlan });
+        })
+      );
       navigation.goBack();
     } catch (error) {
       console.error("Error al guardar cambios:", error);

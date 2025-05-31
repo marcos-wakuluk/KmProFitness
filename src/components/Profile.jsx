@@ -24,9 +24,8 @@ const Profile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
-        const userData = response.data.data;
-        initializeUserData(userData.user);
+        const { data } = await axios.get(`${API_BASE_URL}/users/${userId}`);
+        initializeUserData(data.data.user);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -55,9 +54,8 @@ const Profile = () => {
         height,
       };
 
-      const response = await axios.put(`${API_BASE_URL}/users/${userId}`, updatedUser);
-
-      const updatedUserData = response.data.data.user;
+      const { data } = await axios.put(`${API_BASE_URL}/users/${userId}`, updatedUser);
+      const updatedUserData = data.data.user;
       setName(updatedUserData.name);
       setPhone(updatedUserData.phone);
       setAge(calculateAge(updatedUserData.birthday));

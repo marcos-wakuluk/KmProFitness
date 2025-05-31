@@ -29,11 +29,9 @@ const WorkoutList = ({ navigation }) => {
 
   const fetchPdfFiles = async () => {
     try {
-      let url = `${API_BASE_URL}/pdfFilesTraining`;
-      const response = await axios.get(url);
-      const pdfFiles = response.data;
+      const { data } = await axios.get(`${API_BASE_URL}/pdfFilesTraining`);
 
-      setPdfFiles(pdfFiles);
+      setPdfFiles(data);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching PDF files:", error);

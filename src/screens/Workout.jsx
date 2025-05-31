@@ -15,9 +15,8 @@ const Workout = ({ route }) => {
   useEffect(() => {
     const fetchWorkoutPlan = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/workoutPlans/${trainingPlan}`);
-
-        setWorkoutPlanUrl(response.data.trainingPdfUrl);
+        const { data } = await axios.get(`${API_BASE_URL}/workoutPlans/${trainingPlan}`);
+        setWorkoutPlanUrl(data.trainingPdfUrl);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching workout plan:", error);

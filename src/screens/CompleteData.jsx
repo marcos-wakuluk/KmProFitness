@@ -32,7 +32,7 @@ const Profile = memo(({ user }) => {
     };
 
     try {
-      const response = await axios.put(`${API_BASE_URL}/usersDetails/${user._id}`, {
+      const { data } = await axios.put(`${API_BASE_URL}/usersDetails/${user._id}`, {
         updateData: updateUser,
         name,
         lastName,
@@ -43,7 +43,7 @@ const Profile = memo(({ user }) => {
       Alert.alert("Datos guardados exitosamente", "", [
         {
           text: "OK",
-          onPress: () => navigation.navigate("Home", { user: response.data.data.user }),
+          onPress: () => navigation.navigate("Home", { user: data.data.user }),
         },
       ]);
     } catch (error) {

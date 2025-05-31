@@ -14,13 +14,12 @@ const UserList = ({ navigation }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/users`, {
+      const { data } = await axios.get(`${API_BASE_URL}/users`, {
         params: {
           field: "name",
         },
       });
-      const { data } = response.data;
-      const users = data.users;
+      const users = data.data.users;
       setUsers(users);
       setLoading(false);
     } catch (error) {
@@ -44,8 +43,8 @@ const UserList = ({ navigation }) => {
   const renderUserItem = ({ item }) => {
     const handleUserPress = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/users/${item._id}`);
-        const userDetail = response.data.data.user;
+        const { data } = await axios.get(`${API_BASE_URL}/users/${item._id}`);
+        const userDetail = data.data.user;
         navigation.navigate("UserDetail", { userDetail });
       } catch (error) {
         console.error("Error fetching user detail:", error);

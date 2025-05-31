@@ -26,11 +26,8 @@ const DietPlanList = ({ navigation }) => {
   useEffect(() => {
     const fetchPdfFiles = async () => {
       try {
-        let url = `${API_BASE_URL}/pdfFiles`;
-        const response = await axios.get(url);
-        const pdfFiles = response.data;
-
-        setPdfFiles(pdfFiles);
+        const { data } = await axios.get(`${API_BASE_URL}/pdfFiles`);
+        setPdfFiles(data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching PDF files:", error);

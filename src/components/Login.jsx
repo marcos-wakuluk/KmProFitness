@@ -43,8 +43,8 @@ const Login = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, pass: password });
-      const user = response.data.user;
+      const { data } = await axios.post(`${API_BASE_URL}/auth/login`, { email, pass: password });
+      const user = data.user;
 
       if (user) {
         await AsyncStorage.setItem("@user", JSON.stringify(user));

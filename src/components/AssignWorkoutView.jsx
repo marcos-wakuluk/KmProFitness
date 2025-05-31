@@ -16,13 +16,12 @@ const AssignWorkoutView = ({ navigation, route }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/users`, {
+      const { data } = await axios.get(`${API_BASE_URL}/users`, {
         params: {
           field: "name,trainingPlan,lastUpdate",
         },
       });
-      const { data } = response.data;
-      setUsers(data.users);
+      setUsers(data.data.users);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -53,7 +52,9 @@ const AssignWorkoutView = ({ navigation, route }) => {
   const handleSaveChanges = async () => {
     try {
       await Promise.all(
-        users.map((user) => axios.put(`${API_BASE_URL}/users/${user._id}`, { trainingPlan: user.trainingPlan }))
+        filteredUsers.map(async (user) => {
+          await axios.put(`${API_BASE_URL}/users/${user._id}`, { trainingPlan: user.trainingPlan });
+        })
       );
       navigation.goBack();
     } catch (error) {
