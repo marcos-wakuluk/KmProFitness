@@ -56,9 +56,9 @@ const UserList = ({ navigation }) => {
 
   const filteredUsers = users.filter((user) => {
     const normalizedSearchText = searchText.toLowerCase();
-    const normalizedUserName = user.name.toLowerCase();
+    const normalizedUserName = user?.name?.toLowerCase();
 
-    return normalizedUserName.includes(normalizedSearchText);
+    return normalizedUserName?.includes(normalizedSearchText);
   });
 
   return (
