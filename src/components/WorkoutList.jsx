@@ -39,24 +39,39 @@ const WorkoutList = ({ navigation }) => {
     }
   };
 
+  const removePdf = async (pdfId) => {
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/workoutPlans/${pdfId}`);
+      if (response.status === 200) {
+        Alert.alert("Éxito", "El PDF se ha eliminado correctamente");
+      } else {
+        Alert.alert("Error", "Ha ocurrido un error al eliminar el PDF");
+      }
+    } catch (error) {
+      console.error("Error removing PDF:", error);
+      Alert.alert("Error", "Ha ocurrido un error al eliminar el PDF");
+    }
+  };
+
   const renderPdfItem = ({ item }) => (
     <View style={styles.pdfItem}>
-      <Text style={{ fontSize: 20 }}>{item.name}</Text>
-      <TouchableOpacity onPress={() => setSelectedPdf(item.trainingPdfUrl)} style={styles.iconButton}>
-        <Ionicons name="eye" size={24} color="#d1e0f3" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("AssignWorkoutView", { workoutId: item._id })}
-        style={styles.iconButton}
-      >
-        <Ionicons name="person-add" size={24} color="#d1e0f3" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("AssignWorkoutView", { workoutId: item._id })}
-        style={styles.iconButton}
-      >
-        <Ionicons name="trash" size={24} color="#d1e0f3" />
-      </TouchableOpacity>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontSize: 20 }}>{item.name}</Text>
+      </View>
+      <View style={styles.iconGroup}>
+        <TouchableOpacity onPress={() => setSelectedPdf(item.trainingPdfUrl)} style={styles.iconButton}>
+          <Ionicons name="eye" size={24} color="#d1e0f3" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("AssignWorkoutView", { workoutId: item._id })}
+          style={styles.iconButton}
+        >
+          <Ionicons name="person-add" size={24} color="#d1e0f3" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => removePdf(item._id)} style={styles.iconButton}>
+          <Ionicons name="trash" size={24} color="#d1e0f3" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -194,7 +209,6 @@ const styles = StyleSheet.create({
   },
   pdfItem: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
     borderBottomWidth: 1,
@@ -205,6 +219,14 @@ const styles = StyleSheet.create({
     bottom: 20,
     padding: 10,
     elevation: 5,
+  },
+  iconGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  iconButton: {
+    padding: 8,
   },
 });
 

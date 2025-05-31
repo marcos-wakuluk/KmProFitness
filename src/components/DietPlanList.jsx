@@ -38,10 +38,24 @@ const DietPlanList = ({ navigation }) => {
     fetchPdfFiles();
   }, []);
 
+  const removePdf = async (pdfId) => {
+    try {
+      const response = await axios.delete(`${API_BASE_URL}/mealPlans/${pdfId}`);
+      if (response.status === 200) {
+        Alert.alert("Éxito", "El PDF se ha eliminado correctamente");
+      } else {
+        Alert.alert("Error", "Ha ocurrido un error al eliminar el PDF");
+      }
+    } catch (error) {
+      console.error("Error removing PDF:", error);
+      Alert.alert("Error", "Ha ocurrido un error al eliminar el PDF");
+    }
+  };
+
   const renderPdfItem = ({ item }) => (
     <View style={styles.pdfItem}>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 20 }}>{item.name}</Text>
+        <Text style={{ fontSize: 20 }}>{item?.name}</Text>
       </View>
       <View style={styles.iconGroup}>
         <TouchableOpacity onPress={() => setSelectedPdf(item.mealPdfUrl)} style={styles.iconButton}>
@@ -53,10 +67,7 @@ const DietPlanList = ({ navigation }) => {
         >
           <Ionicons name="person-add" size={24} color="#d1e0f3" />
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("AssignDietView", { dietId: item._id })}
-          style={styles.iconButton}
-        >
+        <TouchableOpacity onPress={() => removePdf(item._id)} style={styles.iconButton}>
           <Ionicons name="trash" size={24} color="#d1e0f3" />
         </TouchableOpacity>
       </View>
