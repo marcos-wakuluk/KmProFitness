@@ -1,38 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { View, Image, StyleSheet, Text, ActivityIndicator, FlatList } from "react-native";
+import { useState } from "react";
+import { View, Image, StyleSheet, Text, FlatList } from "react-native";
 import { Card, Divider } from "react-native-paper";
-import axios from "axios";
 import { calculateAge } from "../utils/functions";
 
+const getUserFromParams = (userDetail) => {
+  if (userDetail?.data?.user) return userDetail.data.user;
+  if (userDetail?.user) return userDetail.user;
+  return userDetail || {};
+};
+
 const UserDetail = ({ route }) => {
-  const { userId } = route.params;
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
-  const fetchUser = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3000/users/${userId}`);
-      const userData = response.data.data;
-
-      setUser(userData.user);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
+  const { userDetail } = route.params;
+  const [user] = useState(getUserFromParams(userDetail));
 
   const keyTranslations = {
     date: "Fecha",
@@ -69,7 +48,7 @@ const UserDetail = ({ route }) => {
           <Text style={styles.cell} key={idx}>
             {key === "date"
               ? new Date(value).toLocaleDateString("es-AR", { year: "2-digit", month: "2-digit", day: "2-digit" })
-              : value}
+              : value ?? "-"}
           </Text>
         ))}
     </View>
@@ -79,34 +58,63 @@ const UserDetail = ({ route }) => {
     <Card style={styles.userDetailContainer}>
       <Card.Title title="Detalles del Usuario" />
       <Card.Content>
-        <Text style={styles.userInfo}>{`Nombre: ${user.name} ${user.lastName}`}</Text>
-        <Text style={styles.userInfo}>{`Edad: ${calculateAge(user.birthday)} años`}</Text>
-        <Text style={styles.userInfo}>{`Email: ${user.email}`}</Text>
-        <Text style={styles.userInfo}>{`Teléfono: ${user.phone}`}</Text>
-        <Text style={styles.userInfo}>{`Altura: ${user.height} cm`}</Text>
+        <Text style={styles.userInfo}>{`ID: ${user?._id ?? "-"}`}</Text>
+        <Text style={styles.userInfo}>{`Nombre: ${user?.name ?? "-"} ${user?.lastName ?? "-"}`}</Text>
+        <Text style={styles.userInfo}>{`Edad: ${user?.birthday ? calculateAge(user.birthday) + " años" : "-"}`}</Text>
+        <Text style={styles.userInfo}>{`Fecha de nacimiento: ${
+          user?.birthday ? new Date(user.birthday).toLocaleDateString("es-AR") : "-"
+        }`}</Text>
+        <Text style={styles.userInfo}>{`Email: ${user?.email ?? "-"}`}</Text>
+        <Text style={styles.userInfo}>{`Teléfono: ${user?.phone ?? "-"}`}</Text>
+        <Text style={styles.userInfo}>{`Altura: ${user?.height ? user.height + " cm" : "-"}`}</Text>
+        <Text style={styles.userInfo}>{`Plan de alimentación: ${
+          typeof user.mealPlan === "object" ? user.mealPlan?.name ?? "-" : user.mealPlan ?? "-"
+        }`}</Text>
+        <Text style={styles.userInfo}>{`Plan de entrenamiento: ${
+          typeof user.trainingPlan === "object" ? user.trainingPlan?.name ?? "-" : user.trainingPlan ?? "-"
+        }`}</Text>
+        <Text style={styles.userInfo}>{`Última actualización general: ${
+          user?.lastUpdate ? new Date(user.lastUpdate).toLocaleDateString("es-AR") : "-"
+        }`}</Text>
+        <Text style={styles.userInfo}>{`Última actualización alimentación: ${
+          user?.lastUpdateMeal ? new Date(user.lastUpdateMeal).toLocaleDateString("es-AR") : "-"
+        }`}</Text>
+        <Text style={styles.userInfo}>{`Última actualización entrenamiento: ${
+          user?.lastUpdateTraining ? new Date(user.lastUpdateTraining).toLocaleDateString("es-AR") : "-"
+        }`}</Text>
+        <Text style={styles.userInfo}>{`Nuevo usuario: ${user?.newUser ? "Sí" : "No"}`}</Text>
+        <Text style={styles.userInfo}>{`Progreso: ${user?.progress ?? "-"}`}</Text>
+        <Text style={styles.userInfo}>{`enabledCards: ${
+          user?.enabledCards ? JSON.stringify(user.enabledCards) : "-"
+        }`}</Text>
       </Card.Content>
     </Card>
   );
 
   return (
     <View style={styles.container}>
-      <View style={styles.background}></View>
+      <View style={styles.background} />
       <Image source={require("../assets/KM-white.png")} style={styles.image} />
-      {user && (
-        <FlatList
-          data={user.details}
-          ListHeaderComponent={() => (
-            <>
-              {renderUserInfo()}
-              <Divider style={styles.divider} />
-              {renderHeader()}
-            </>
-          )}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={styles.tableContainer}
-        />
-      )}
+      <FlatList
+        data={user.details && Array.isArray(user.details) ? user.details : []}
+        ListHeaderComponent={() => (
+          <>
+            {renderUserInfo()}
+            {user.details && user.details.length > 0 && (
+              <>
+                <Divider style={styles.divider} />
+                {renderHeader()}
+              </>
+            )}
+          </>
+        )}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+        contentContainerStyle={styles.tableContainer}
+        ListEmptyComponent={
+          <Text style={{ textAlign: "center", color: "#888", marginTop: 20 }}>No hay detalles para mostrar.</Text>
+        }
+      />
     </View>
   );
 };
@@ -133,11 +141,6 @@ const styles = StyleSheet.create({
     width: 200,
     alignSelf: "center",
     top: "10%",
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
   userDetailContainer: {
     marginTop: 250,

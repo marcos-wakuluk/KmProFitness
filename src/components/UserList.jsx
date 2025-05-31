@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { API_BASE_URL } from "@env";
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
 import axios from "axios";
 
@@ -13,7 +14,7 @@ const UserList = ({ navigation }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/users", {
+      const response = await axios.get(`${API_BASE_URL}/users`, {
         params: {
           field: "name",
         },
@@ -41,8 +42,14 @@ const UserList = ({ navigation }) => {
   };
 
   const renderUserItem = ({ item }) => {
-    const handleUserPress = () => {
-      navigation.navigate("UserDetail", { userId: item._id });
+    const handleUserPress = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/users/${item._id}`);
+        const userDetail = response.data.data.user;
+        navigation.navigate("UserDetail", { userDetail });
+      } catch (error) {
+        console.error("Error fetching user detail:", error);
+      }
     };
 
     return (
