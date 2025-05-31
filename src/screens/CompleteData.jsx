@@ -5,6 +5,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { API_BASE_URL } from "@env";
 
 const Profile = memo(({ user }) => {
   const navigation = useNavigation();
@@ -31,7 +32,7 @@ const Profile = memo(({ user }) => {
     };
 
     try {
-      const response = await axios.put(`http://localhost:3001/usersDetails/${user._id}`, {
+      const response = await axios.put(`${API_BASE_URL}/usersDetails/${user._id}`, {
         updateData: updateUser,
         name,
         lastName,

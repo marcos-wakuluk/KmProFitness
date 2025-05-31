@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Image } from "react-native";
 import { Input, Button } from "react-native-elements";
+import { API_BASE_URL } from "@env";
 
 const PasswordRecovery = ({ navigation }) => {
   const [email, setEmail] = useState("");
 
   const handleRecovery = async () => {
     try {
-      const response = await fetch("http://localhost:3001/password-recovery", {
+      const response = await fetch(`${API_BASE_URL}/password-recovery`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

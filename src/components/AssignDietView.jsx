@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { View, TextInput, StyleSheet, Text, FlatList, Button, Image, ActivityIndicator } from "react-native";
 import { CheckBox } from "react-native-elements";
+import { API_BASE_URL } from "@env";
 
 const AssignDietView = ({ navigation, route }) => {
   const { dietId } = route.params;
@@ -16,7 +17,7 @@ const AssignDietView = ({ navigation, route }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/users", {
+      const response = await axios.get(`${API_BASE_URL}/users`, {
         params: {
           field: "name,mealPlan,lastUpdate",
         },
@@ -76,10 +77,10 @@ const AssignDietView = ({ navigation, route }) => {
     try {
       const updatedUsers = filteredUsers.map(async (user) => {
         if (userCheckboxes[user._id]) {
-          await axios.put(`http://localhost:3001/users/${user._id}`, { mealPlan: dietId });
+          await axios.put(`${API_BASE_URL}/users/${user._id}`, { mealPlan: dietId });
           return { ...user, mealPlan: dietId };
         } else {
-          await axios.put(`http://localhost:3001/users/${user._id}`, { mealPlan: null });
+          await axios.put(`${API_BASE_URL}/users/${user._id}`, { mealPlan: null });
           return { ...user, mealPlan: null };
         }
       });

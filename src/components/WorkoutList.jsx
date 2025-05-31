@@ -15,6 +15,7 @@ import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
 import { WebView } from "react-native-webview";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { API_BASE_URL } from "@env";
 
 const WorkoutList = ({ navigation }) => {
   const [pdfFiles, setPdfFiles] = useState([]);
@@ -28,7 +29,7 @@ const WorkoutList = ({ navigation }) => {
 
   const fetchPdfFiles = async () => {
     try {
-      let url = "http://localhost:3000/pdfFilesTraining";
+      let url = `${API_BASE_URL}/pdfFilesTraining`;
       const response = await axios.get(url);
       const pdfFiles = response.data;
 
@@ -83,7 +84,7 @@ const WorkoutList = ({ navigation }) => {
         formData.append("name", fileName);
         formData.append("description", "Descripción");
 
-        const response = await fetch("http://localhost:3000/uploadPdfTraining", {
+        const response = await fetch(`${API_BASE_URL}/uploadPdfTraining`, {
           method: "POST",
           body: formData,
           headers: {

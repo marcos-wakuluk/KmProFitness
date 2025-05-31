@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { View, StyleSheet, TouchableOpacity, Image, Text } from "react-native";
 import { Input } from "react-native-elements";
@@ -6,11 +6,11 @@ import * as WebBrowser from "expo-web-browser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome } from "@expo/vector-icons";
 WebBrowser.maybeCompleteAuthSession();
+import { API_BASE_URL } from "@env";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("wakuluk.marcos@gmail.com");
   const [password, setPassword] = useState("da6d3hxa");
-  const [userInfo, setUserInfo] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const Login = ({ navigation }) => {
 
   const fetchUser = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:3001/users/${userId}`);
+      const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
       return response.data.data.user;
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -41,30 +41,9 @@ const Login = ({ navigation }) => {
     }
   };
 
-  const getLocalUser = async () => {
-    const data = await AsyncStorage.getItem("@user");
-    if (!data) return null;
-    return JSON.parse(data);
-  };
-
-  const getUserInfo = async (token) => {
-    if (!token) return;
-    try {
-      const response = await axios.get("https://www.googleapis.com/userinfo/v2/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const user = response.data;
-      await AsyncStorage.setItem("@user", JSON.stringify(user));
-      setUserInfo(user);
-      return user;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:3001/auth/login", { email, pass: password });
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, pass: password });
       const user = response.data.user;
 
       if (user) {

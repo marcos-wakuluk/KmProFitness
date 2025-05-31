@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
 import { WebView } from "react-native-webview";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { API_BASE_URL } from "@env";
 
 const DietPlanList = ({ navigation }) => {
   const [pdfFiles, setPdfFiles] = useState([]);
@@ -23,22 +24,22 @@ const DietPlanList = ({ navigation }) => {
   const [selectedPdf, setSelectedPdf] = useState(null);
 
   useEffect(() => {
+    const fetchPdfFiles = async () => {
+      try {
+        let url = `${API_BASE_URL}/pdfFiles`;
+        const response = await axios.get(url);
+        const pdfFiles = response.data;
+
+        setPdfFiles(pdfFiles);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching PDF files:", error);
+        setLoading(false);
+      }
+    };
+
     fetchPdfFiles();
   }, []);
-
-  const fetchPdfFiles = async () => {
-    try {
-      let url = "http://localhost:3000/pdfFiles";
-      const response = await axios.get(url);
-      const pdfFiles = response.data;
-
-      setPdfFiles(pdfFiles);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching PDF files:", error);
-      setLoading(false);
-    }
-  };
 
   const renderPdfItem = ({ item }) => (
     <View style={styles.pdfItem}>
@@ -83,7 +84,7 @@ const DietPlanList = ({ navigation }) => {
         formData.append("name", fileName);
         formData.append("description", "Descripción");
 
-        const response = await fetch("http://localhost:3000/uploadPdf", {
+        const response = await fetch(`${API_BASE_URL}/uploadPdf`, {
           method: "POST",
           body: formData,
           headers: {

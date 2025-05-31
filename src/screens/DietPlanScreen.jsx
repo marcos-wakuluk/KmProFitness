@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions, ActivityIndicator, Animated } from 
 import { WebView } from "react-native-webview";
 import axios from "axios";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { API_BASE_URL } from "@env";
 
 const DietPlanScreen = ({ route }) => {
   const { mealPlan } = route.params;
@@ -14,7 +15,7 @@ const DietPlanScreen = ({ route }) => {
   useEffect(() => {
     const fetchMealPlan = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/mealPlans/${mealPlan}`);
+        const response = await axios.get(`${API_BASE_URL}/mealPlans/${mealPlan}`);
 
         setMealPlanUrl(response.data.mealPdfUrl);
         setLoading(false);

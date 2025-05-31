@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { View, TextInput, StyleSheet, Text, FlatList, Button, Image, ActivityIndicator } from "react-native";
 import { CheckBox } from "react-native-elements";
+import { API_BASE_URL } from "@env";
 
 const AssignWorkoutView = ({ navigation, route }) => {
   const { workoutId } = route.params;
@@ -15,7 +16,7 @@ const AssignWorkoutView = ({ navigation, route }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/users", {
+      const response = await axios.get(`${API_BASE_URL}/users`, {
         params: {
           field: "name,trainingPlan,lastUpdate",
         },
@@ -52,7 +53,7 @@ const AssignWorkoutView = ({ navigation, route }) => {
   const handleSaveChanges = async () => {
     try {
       await Promise.all(
-        users.map((user) => axios.put(`http://localhost:3001/users/${user._id}`, { trainingPlan: user.trainingPlan }))
+        users.map((user) => axios.put(`${API_BASE_URL}/users/${user._id}`, { trainingPlan: user.trainingPlan }))
       );
       navigation.goBack();
     } catch (error) {

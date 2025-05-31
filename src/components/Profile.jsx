@@ -5,6 +5,7 @@ import { useRoute } from "@react-navigation/native";
 import { calculateAge } from "../utils/functions";
 import axios from "axios";
 import * as ImagePicker from "expo-image-picker";
+import { API_BASE_URL } from "@env";
 
 const Profile = () => {
   const route = useRoute();
@@ -23,7 +24,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/users/${userId}`);
+        const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
         const userData = response.data.data;
         initializeUserData(userData.user);
         setLoading(false);
@@ -54,7 +55,7 @@ const Profile = () => {
         height,
       };
 
-      const response = await axios.put(`http://localhost:3001/users/${userId}`, updatedUser);
+      const response = await axios.put(`${API_BASE_URL}/users/${userId}`, updatedUser);
 
       const updatedUserData = response.data.data.user;
       setName(updatedUserData.name);
