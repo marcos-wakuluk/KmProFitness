@@ -43,22 +43,26 @@ const DietPlanList = ({ navigation }) => {
 
   const renderPdfItem = ({ item }) => (
     <View style={styles.pdfItem}>
-      <Text style={{ fontSize: 20 }}>{item.name}</Text>
-      <TouchableOpacity onPress={() => setSelectedPdf(item.mealPdfUrl)} style={styles.iconButton}>
-        <Ionicons name="eye" size={24} color="#d1e0f3" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("AssignDietView", { dietId: item._id })}
-        style={styles.iconButton}
-      >
-        <Ionicons name="person-add" size={24} color="#d1e0f3" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("AssignDietView", { dietId: item._id })}
-        style={styles.iconButton}
-      >
-        <Ionicons name="trash" size={24} color="#d1e0f3" />
-      </TouchableOpacity>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontSize: 20 }}>{item.name}</Text>
+      </View>
+      <View style={styles.iconGroup}>
+        <TouchableOpacity onPress={() => setSelectedPdf(item.mealPdfUrl)} style={styles.iconButton}>
+          <Ionicons name="eye" size={24} color="#d1e0f3" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("AssignDietView", { dietId: item._id })}
+          style={styles.iconButton}
+        >
+          <Ionicons name="person-add" size={24} color="#d1e0f3" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("AssignDietView", { dietId: item._id })}
+          style={styles.iconButton}
+        >
+          <Ionicons name="trash" size={24} color="#d1e0f3" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -195,11 +199,18 @@ const styles = StyleSheet.create({
   },
   pdfItem: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+  },
+  iconGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  iconButton: {
+    padding: 8,
   },
   floatingButton: {
     position: "absolute",
