@@ -15,7 +15,7 @@ const Workout = ({ route }) => {
   useEffect(() => {
     const fetchWorkoutPlan = async () => {
       try {
-        const { data } = await axios.get(`${API_BASE_URL}/workoutPlans/${trainingPlan}`);
+        const { data } = await axios.get(`${API_BASE_URL}/training-plans/${trainingPlan}`);
         setWorkoutPlanUrl(data.trainingPdfUrl);
         setLoading(false);
       } catch (error) {

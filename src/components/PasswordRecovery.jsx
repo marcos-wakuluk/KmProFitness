@@ -8,7 +8,7 @@ const PasswordRecovery = ({ navigation }) => {
 
   const handleRecovery = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/password-recovery`, {
+      const response = await fetch(`${API_BASE_URL}/users/password-recovery`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

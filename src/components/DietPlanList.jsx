@@ -26,7 +26,7 @@ const DietPlanList = ({ navigation }) => {
   useEffect(() => {
     const fetchPdfFiles = async () => {
       try {
-        const { data } = await axios.get(`${API_BASE_URL}/pdfFiles`);
+        const { data } = await axios.get(`${API_BASE_URL}/meal-plans/pdf-files`);
         setPdfFiles(data);
         setLoading(false);
       } catch (error) {
@@ -40,7 +40,7 @@ const DietPlanList = ({ navigation }) => {
 
   const removePdf = async (pdfId) => {
     try {
-      const response = await axios.delete(`${API_BASE_URL}/mealPlans/${pdfId}`);
+      const response = await axios.delete(`${API_BASE_URL}/meal-plans/${pdfId}`);
       if (response.status === 200) {
         Alert.alert("Éxito", "El PDF se ha eliminado correctamente");
       } else {
@@ -96,7 +96,7 @@ const DietPlanList = ({ navigation }) => {
         formData.append("name", fileName);
         formData.append("description", "Descripción");
 
-        const response = await fetch(`${API_BASE_URL}/uploadPdf`, {
+        const response = await fetch(`${API_BASE_URL}/meal-plans/upload-pdf`, {
           method: "POST",
           body: formData,
           headers: {

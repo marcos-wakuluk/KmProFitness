@@ -29,7 +29,7 @@ const WorkoutList = ({ navigation }) => {
 
   const fetchPdfFiles = async () => {
     try {
-      const { data } = await axios.get(`${API_BASE_URL}/pdfFilesTraining`);
+      const { data } = await axios.get(`${API_BASE_URL}/training-plans/pdf-files`);
 
       setPdfFiles(data);
       setLoading(false);
@@ -41,7 +41,7 @@ const WorkoutList = ({ navigation }) => {
 
   const removePdf = async (pdfId) => {
     try {
-      const response = await axios.delete(`${API_BASE_URL}/workoutPlans/${pdfId}`);
+      const response = await axios.delete(`${API_BASE_URL}/training-plans/${pdfId}`);
       if (response.status === 200) {
         Alert.alert("Éxito", "El PDF se ha eliminado correctamente");
       } else {
@@ -97,7 +97,7 @@ const WorkoutList = ({ navigation }) => {
         formData.append("name", fileName);
         formData.append("description", "Descripción");
 
-        const response = await fetch(`${API_BASE_URL}/uploadPdfTraining`, {
+        const response = await fetch(`${API_BASE_URL}/training-plans/upload-pdf`, {
           method: "POST",
           body: formData,
           headers: {

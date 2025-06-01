@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { View, TextInput, StyleSheet, Text, FlatList, TouchableOpacity, Image, ActivityIndicator } from "react-native";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { CheckBox } from "react-native-elements";
 import { API_BASE_URL } from "@env";
 
@@ -9,6 +19,7 @@ const AssignWorkoutView = ({ navigation, route }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
+  const [userCheckboxes, setUserCheckboxes] = useState({});
 
   useEffect(() => {
     fetchUsers();
@@ -22,6 +33,7 @@ const AssignWorkoutView = ({ navigation, route }) => {
         },
       });
       setUsers(data.data.users);
+      initializeCheckboxes(data.data.users);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -29,14 +41,19 @@ const AssignWorkoutView = ({ navigation, route }) => {
     }
   };
 
-  const handleCheckboxChange = (userId) => {
-    const updatedUsers = users.map((user) => {
-      if (user._id === userId) {
-        return { ...user, trainingPlan: user.trainingPlan === workoutId ? null : workoutId };
-      }
-      return user;
+  const initializeCheckboxes = (users) => {
+    const checkboxes = {};
+    users.forEach((user) => {
+      checkboxes[user._id] = user.trainingPlan === workoutId;
     });
-    setUsers(updatedUsers);
+    setUserCheckboxes(checkboxes);
+  };
+
+  const handleCheckboxChange = (userId) => {
+    setUserCheckboxes((prevState) => ({
+      ...prevState,
+      [userId]: !prevState[userId],
+    }));
   };
 
   const handleSearch = (text) => {
@@ -51,13 +68,19 @@ const AssignWorkoutView = ({ navigation, route }) => {
 
   const handleSaveChanges = async () => {
     try {
+      const usersToUpdate = filteredUsers.filter(
+        (user) => (userCheckboxes[user._id] ? workoutId : null) !== user.trainingPlan
+      );
       await Promise.all(
-        filteredUsers.map(async (user) => {
-          await axios.put(`${API_BASE_URL}/users/${user._id}`, { trainingPlan: user.trainingPlan });
+        usersToUpdate.map(async (user) => {
+          const newTrainingPlan = userCheckboxes[user._id] ? workoutId : null;
+          await axios.put(`${API_BASE_URL}/users/${user._id}`, { trainingPlan: newTrainingPlan });
         })
       );
+      Alert.alert("Cambios guardados", "Los cambios se han guardado correctamente.");
       navigation.goBack();
     } catch (error) {
+      Alert.alert("Error", "Ha ocurrido un error al guardar los cambios.");
       console.error("Error al guardar cambios:", error);
     }
   };
@@ -72,7 +95,7 @@ const AssignWorkoutView = ({ navigation, route }) => {
 
   const renderUserItem = ({ item }) => {
     let fechaFormateada = "";
-    if (item.mealPlan !== null && item.lastUpdateTraining) {
+    if (item.trainingPlan !== null && item.lastUpdateTraining) {
       const fecha = new Date(item.lastUpdateTraining);
       const dia = fecha.getDate();
       const mes = fecha.getMonth() + 1;
@@ -83,8 +106,8 @@ const AssignWorkoutView = ({ navigation, route }) => {
     return (
       <View style={styles.userItem}>
         <Text style={styles.userName}>{item.name}</Text>
-        {item.mealPlan !== null && fechaFormateada !== "" && <Text style={styles.date}>{fechaFormateada}</Text>}
-        <CheckBox checked={item.trainingPlan === workoutId} onPress={() => handleCheckboxChange(item._id)} />
+        {item.trainingPlan !== null && fechaFormateada !== "" && <Text style={styles.date}>{fechaFormateada}</Text>}
+        <CheckBox checked={userCheckboxes[item._id]} onPress={() => handleCheckboxChange(item._id)} />
       </View>
     );
   };

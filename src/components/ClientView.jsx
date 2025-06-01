@@ -61,7 +61,7 @@ const ClientView = ({ navigation }) => {
   useEffect(() => {
     const loadProgressFromDB = async () => {
       try {
-        const { data } = await axios.get(`${API_BASE_URL}/progress/${user._id}`);
+        const { data } = await axios.get(`/users/progress/${user._id}`);
         const { enabledCards: savedCards, progress: savedProgress } = data.data;
 
         if (savedCards) {
@@ -80,7 +80,7 @@ const ClientView = ({ navigation }) => {
 
   const saveProgressToDB = async (updatedCards, updatedProgress) => {
     try {
-      await axios.post(`${API_BASE_URL}/progress/${user._id}`, {
+      await axios.post(`/users/progress/${user._id}`, {
         enabledCards: updatedCards,
         progress: updatedProgress,
       });

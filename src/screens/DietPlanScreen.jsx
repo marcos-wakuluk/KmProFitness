@@ -15,7 +15,7 @@ const DietPlanScreen = ({ route }) => {
   useEffect(() => {
     const fetchMealPlan = async () => {
       try {
-        const { data } = await axios.get(`${API_BASE_URL}/mealPlans/${mealPlan}`);
+        const { data } = await axios.get(`${API_BASE_URL}/meal-plans/${mealPlan}`);
         setMealPlanUrl(data.mealPdfUrl);
         setLoading(false);
       } catch (error) {

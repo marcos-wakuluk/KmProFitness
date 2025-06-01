@@ -32,7 +32,7 @@ const Profile = memo(({ user }) => {
     };
 
     try {
-      const { data } = await axios.put(`${API_BASE_URL}/usersDetails/${user._id}`, {
+      const { data } = await axios.put(`${API_BASE_URL}/users/usersDetails/${user._id}`, {
         updateData: updateUser,
         name,
         lastName,
