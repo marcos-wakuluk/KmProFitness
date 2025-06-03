@@ -4,27 +4,46 @@
     "slug": "KmProFitness",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./src/assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "black"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
+    "jsEngine": "hermes",
     "ios": {
-      "supportsTablet": true
+      "jsEngine": "jsc",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.WakulukMarcos.kmprofitness",
+      "newArchEnabled": true
+    },
+    "infoPlist": {
+      "NSLocationWhenInUseUsageDescription": "This app uses your location to show nearby locations.",
+      "NSPhotoLibraryUsageDescription": "This app needs access to your photo library.",
+      "UIViewControllerBasedStatusBarAppearance": true,
+      "UIStatusBarHidden": true
     },
     "android": {
+      "package": "com.WakulukMarcos.kmprofitness",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "backgroundColor": "black"
+      },
+      "newArchEnabled": true
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./src/assets/favicon.png"
+    },
+    "scheme": "kmprofitness",
+    "extra": {
+      "eas": {
+        "projectId": "9bc04a7c-95ee-4e3c-b0b5-25652566bc8e"
+      }
+    },
+    "androidStatusBar": {
+      "backgroundColor": "black",
+      "translucent": true
     }
   }
 }
