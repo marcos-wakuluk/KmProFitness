@@ -61,7 +61,7 @@ const ClientView = ({ navigation }) => {
   useEffect(() => {
     const loadProgressFromDB = async () => {
       try {
-        const { data } = await axios.get(`/users/progress/${user._id}`);
+        const { data } = await axios.get(`${API_BASE_URL}/users/progress/${user._id}`);
         const { enabledCards: savedCards, progress: savedProgress } = data.data;
 
         if (savedCards) {
@@ -80,7 +80,7 @@ const ClientView = ({ navigation }) => {
 
   const saveProgressToDB = async (updatedCards, updatedProgress) => {
     try {
-      await axios.post(`/users/progress/${user._id}`, {
+      await axios.post(`${API_BASE_URL}/users/progress/${user._id}`, {
         enabledCards: updatedCards,
         progress: updatedProgress,
       });
@@ -221,7 +221,9 @@ const ClientView = ({ navigation }) => {
 
         {!showPPRSteps && !showStep1Details && !showStep2Details && (
           <View style={styles.motivationalCardContainer}>
-            <Card phrases={motivationalQuotes} />
+            <Text style={styles.motivationalText}>
+              {motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]}
+            </Text>
           </View>
         )}
       </View>
@@ -360,7 +362,32 @@ const styles = StyleSheet.create({
   motivationalCardContainer: {
     position: "absolute",
     bottom: 80,
-    width: "100%",
+    width: "90%",
+    alignSelf: "center",
+    backgroundColor: "#e0f7fa",
+    borderRadius: 20,
+    paddingVertical: 28,
+    paddingHorizontal: 22,
+    shadowColor: "#0077b6",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 12,
+    borderWidth: 2,
+    borderColor: "#00b4d8",
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  motivationalText: {
+    fontSize: 22,
+    color: "#023047",
+    fontWeight: "bold",
+    textAlign: "center",
+    letterSpacing: 0.5,
+    lineHeight: 32,
+    textShadowColor: "#b6eaff",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   disabledCard: {
     opacity: 0.5,

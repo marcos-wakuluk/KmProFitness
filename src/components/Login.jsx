@@ -5,6 +5,7 @@ import { Input } from "react-native-elements";
 import * as WebBrowser from "expo-web-browser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome } from "@expo/vector-icons";
+import * as SecureStore from "expo-secure-store";
 WebBrowser.maybeCompleteAuthSession();
 import { API_BASE_URL } from "@env";
 
@@ -14,17 +15,36 @@ const Login = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
+    loadCredentials();
     checkIfUserIsLoggedIn();
   }, []);
+
+  const loadCredentials = async () => {
+    try {
+      const savedEmail = await SecureStore.getItemAsync("email");
+      const savedPassword = await SecureStore.getItemAsync("password");
+      if (savedEmail && savedPassword) {
+        setEmail(savedEmail);
+        setPassword(savedPassword);
+        handleLogin(savedEmail, savedPassword);
+      }
+    } catch (error) {
+      console.error("Error loading credentials:", error);
+    }
+  };
 
   const checkIfUserIsLoggedIn = async () => {
     try {
       const storedUser = await AsyncStorage.getItem("@user");
       if (storedUser) {
         const user = JSON.parse(storedUser);
-        const updatedUser = await fetchUser(user.id);
-        await AsyncStorage.setItem("@user", JSON.stringify(updatedUser));
-        navigation.navigate("Home", { user: updatedUser });
+        if (user && user.id) {
+          const updatedUser = await fetchUser(user.id);
+          if (updatedUser && updatedUser._id) {
+            await AsyncStorage.setItem("@user", JSON.stringify(updatedUser));
+            navigation.navigate("Home", { user: updatedUser });
+          }
+        }
       }
     } catch (error) {
       console.error("Error verificando la sesión:", error);
@@ -41,13 +61,18 @@ const Login = ({ navigation }) => {
     }
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (loginEmail, loginPassword) => {
     try {
-      const { data } = await axios.post(`${API_BASE_URL}/users/auth/login`, { email, pass: password });
+      const userEmail = loginEmail || email;
+      const userPassword = loginPassword || password;
+      const { data } = await axios.post(`${API_BASE_URL}/users/auth/login`, { email: userEmail, pass: userPassword });
       const user = data.user;
 
       if (user) {
         await AsyncStorage.setItem("@user", JSON.stringify(user));
+        // Guardar credenciales de forma segura
+        await SecureStore.setItemAsync("email", userEmail);
+        await SecureStore.setItemAsync("password", userPassword);
         navigation.navigate("Home", { user });
       } else {
         alert("Usuario o contraseña incorrectos.");
@@ -99,7 +124,7 @@ const Login = ({ navigation }) => {
       <TouchableOpacity onPress={handleForgotPassword}>
         <Text style={styles.forgotPasswordText}>Olvidó su contraseña?</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+      <TouchableOpacity style={styles.loginButton} onPress={() => handleLogin()}>
         <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleRegister}>

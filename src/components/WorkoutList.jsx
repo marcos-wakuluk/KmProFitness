@@ -16,12 +16,14 @@ import axios from "axios";
 import { WebView } from "react-native-webview";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { API_BASE_URL } from "@env";
+import SpinnerOverlay from "./SpinnerOverlay";
 
 const WorkoutList = ({ navigation }) => {
   const [pdfFiles, setPdfFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [selectedPdf, setSelectedPdf] = useState(null);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   useEffect(() => {
     fetchPdfFiles();
@@ -43,6 +45,7 @@ const WorkoutList = ({ navigation }) => {
     try {
       const response = await axios.delete(`${API_BASE_URL}/training-plans/${pdfId}`);
       if (response.status === 200) {
+        fetchPdfFiles();
         Alert.alert("Éxito", "El PDF se ha eliminado correctamente");
       } else {
         Alert.alert("Error", "Ha ocurrido un error al eliminar el PDF");
@@ -143,8 +146,18 @@ const WorkoutList = ({ navigation }) => {
     <>
       <View style={styles.background}></View>
       <Image source={require("../assets/KM-white.png")} style={styles.image} />
+      <Text style={styles.title}>Planes de entrenamiento</Text>
+
       {selectedPdf ? (
-        <WebView source={{ uri: selectedPdf }} style={{ flex: 1 }} />
+        <>
+          {pdfLoading && <SpinnerOverlay text="Cargando PDF..." color="#00aaff" />}
+          <WebView
+            source={{ uri: selectedPdf }}
+            style={{ flex: 1 }}
+            onLoadStart={() => setPdfLoading(true)}
+            onLoadEnd={() => setPdfLoading(false)}
+          />
+        </>
       ) : (
         <>
           <View style={styles.searchContainer}>
@@ -227,6 +240,17 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     padding: 8,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#fff",
+    textAlign: "center",
+    marginTop: 40,
+    marginBottom: 10,
+    textShadowColor: "#000",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
 });
 

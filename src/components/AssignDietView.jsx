@@ -68,7 +68,7 @@ const AssignDietView = ({ navigation, route }) => {
 
     return (
       <View style={styles.userItem}>
-        <Text style={styles.userName}>{item.name}</Text>
+        <Text style={styles.userName}>{item.name || item.email}</Text>
         {item.mealPlan !== null && fechaFormateada !== "" && <Text style={styles.date}>{fechaFormateada}</Text>}
         <CheckBox checked={userCheckboxes[item._id]} onPress={() => handleCheckboxChange(item._id)} />
       </View>

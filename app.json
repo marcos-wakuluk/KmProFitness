@@ -10,7 +10,9 @@
       "resizeMode": "contain",
       "backgroundColor": "black"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "jsEngine": "hermes",
     "ios": {
       "jsEngine": "jsc",
@@ -44,6 +46,9 @@
     "androidStatusBar": {
       "backgroundColor": "black",
       "translucent": true
-    }
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }
